@@ -1,0 +1,28 @@
+version: "2.2"
+
+services:
+  backend:
+    image: python:3.8-slim
+    working_dir: /app
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHONPYCACHEPREFIX=../pycache
+      - FLASK_ENV=development
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=when3meet
+      - POSTGRES_PASSWORD=when3meet
+      - POSTGRES_DB=when3meet
+    command: bash -c "pip install -r requirements.txt && flask run --host 0.0.0.0"
+    volumes:
+      - ${PWD}/backend:/app
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=when3meet
+      - POSTGRES_PASSWORD=when3meet
+      - POSTGRES_DB=when3meet
+    volumes:
+      - db:/var/lib/postgresql/data
+volumes:
+  db:
