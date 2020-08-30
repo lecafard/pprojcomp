@@ -32,7 +32,7 @@ def update_schedule():
     return jsonify({"message": "updated schedule"})
 
 @blueprint.route('/:id/notes', methods=['GET'])
-def update_notes():
+def get_notes():
     """
     Get the current user's notes.
     """

@@ -1,4 +1,6 @@
 from flask import Flask, jsonify
+import connections.sql
+
 from blueprints.owner import blueprint as owner
 from blueprints.guest import blueprint as guest
 
