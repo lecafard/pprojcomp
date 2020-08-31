@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pprojcomp.ceebs.dev/schema/entries.json",
+  "description": "Schedule entries.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "from": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 86400
+      },
+      "to": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 86400
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required": [
+      "from",
+      "to"
+    ]
+  }
+}

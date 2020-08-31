@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pprojcomp.ceebs.dev/schema/meeting.json",
+  "description": "Meeting Object",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Meeting name",
+      "minLength": 1
+    },
+    "private": {
+      "type": "boolean",
+      "description": "Schedule privacy to guests"
+    },
+    "allow_registration": {
+      "type": "boolean",
+      "description": "Allow users to self register"
+    },
+    "id": {
+      "type": "string",
+      "description": "Meeting ID (private)"
+    },
+    "guest_id": {
+      "type": "string",
+      "description": "Meeting ID (guest)"
+    },
+    "schedule": {
+      "$ref": "#/schedule"
+    }
+  },
+  "required": [
+    "name",
+    "private",
+    "allow_registration"
+  ]
+}
