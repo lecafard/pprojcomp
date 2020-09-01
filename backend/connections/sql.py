@@ -1,9 +1,10 @@
-import psycopg2
 import config
+import sqlalchemy 
+from models import Base
+from sqlalchemy.orm import sessionmaker
 
-connection = psycopg2.connect(
-    host=config.POSTGRES_HOST,
-    port=config.POSTGRES_PORT,
-    dbname=config.POSTGRES_DB,
-    user=config.POSTGRES_USER,
-    password=config.POSTGRES_PASSWORD)
+db = sqlalchemy.create_engine(config.POSTGRES_CONNECTION, echo=config.FLASK_ENV == "development")  
+engine = db.connect()
+
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)

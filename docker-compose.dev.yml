@@ -9,10 +9,7 @@ services:
     environment:
       - PYTHONPYCACHEPREFIX=../pycache
       - FLASK_ENV=development
-      - POSTGRES_HOST=postgres
-      - POSTGRES_USER=when3meet
-      - POSTGRES_PASSWORD=when3meet
-      - POSTGRES_DB=when3meet
+      - POSTGRES_CONNECTION=postgres://when3meet:when3meet@postgres/when3meet
     command: bash -c "pip install -r requirements.txt && flask run --host 0.0.0.0"
     volumes:
       - ${PWD}/backend:/app

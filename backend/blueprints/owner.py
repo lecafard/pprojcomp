@@ -16,7 +16,7 @@ def new_schedule():
 @blueprint.route('/:id/create_users', methods=['POST'])
 def create_users():
     """
-    Allows an admin to pre-create users.
+    Allows an admin to pre-create users (not MVP).
     """
     return jsonify({"message": "new schedule"})
 

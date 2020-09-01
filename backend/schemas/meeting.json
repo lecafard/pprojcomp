@@ -17,11 +17,11 @@
       "type": "boolean",
       "description": "Allow users to self register"
     },
-    "id": {
+    "owner_key": {
       "type": "string",
       "description": "Meeting ID (private)"
     },
-    "guest_id": {
+    "guest_key": {
       "type": "string",
       "description": "Meeting ID (guest)"
     },
