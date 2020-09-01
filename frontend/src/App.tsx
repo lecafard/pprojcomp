@@ -7,17 +7,20 @@ import {
 } from "react-router-dom";
 
 import GuestPage from './pages/guest';
-import NewPage from './pages/new';
+import HomePage from './pages/home';
 import AboutPage from './pages/about';
-import SchedulePage from './pages/schedule';
+import ManageListPage from './pages/manage/list';
+import ManageMeetingPage from './pages/manage/meeting';
+import Navbar from './components/navbar';
 
 function App() {
   return (
-    <div className="App">
+    <div id="app">
       <Router>
+        <Navbar />
         <Switch>
           <Route path="/" exact>
-            <NewPage />  
+            <HomePage />  
           </Route>
 
           <Route path="/about">
@@ -28,8 +31,12 @@ function App() {
             <GuestPage />
           </Route>
 
+          <Route path="/s">
+            <ManageListPage />
+          </Route>
+
           <Route path="/s/:id">
-            <SchedulePage />
+            <ManageMeetingPage />
           </Route>
 
           <Route path="/">

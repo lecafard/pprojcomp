@@ -1,0 +1,8 @@
+.navbar {
+    background-color: var(--bg-theme);
+    --bg-secondary-color: #131316;
+    --font-color: #f5f5f5;
+    --color-grey: #ccc;
+    --color-darkGrey: #fff;
+    --color-primary: #056637;
+}
