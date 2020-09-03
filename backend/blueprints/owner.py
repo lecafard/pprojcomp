@@ -1,4 +1,12 @@
-from flask import jsonify, Blueprint
+from flask import jsonify, Blueprint, request
+from flask_inputs import Inputs
+from flask_inputs.validators import JsonSchema
+import secrets
+import json
+
+from models import db, Meeting
+import schemas
+
 
 blueprint = Blueprint('owner', __name__)
 
@@ -6,12 +14,43 @@ blueprint = Blueprint('owner', __name__)
 def hello_world():
     return jsonify({"message": "Hello, World"})
 
+
+
+class NewInput(Inputs):
+    json = [JsonSchema(schema=schemas.meeting)]
+
 @blueprint.route('/new', methods=['POST'])
 def new_schedule():
     """
-    Createa a new schedule.
+    Creates a new schedule.
     """
-    return jsonify({"message": "new schedule"})
+    inputs = NewInput(request)
+    if not inputs.validate():
+        return jsonify(success=False, errors=inputs.errors)
+
+    owner_key = secrets.token_urlsafe(12)
+    guest_key = secrets.token_urlsafe(12)
+    meeting = Meeting(
+        owner_key=owner_key,
+        guest_key=guest_key,
+        name=request.json["name"],
+        location=request.json["location"],
+        private=request.json["private"],
+        allow_registration=request.json["allow_registration"],
+        options={})
+    
+    db.session.add(meeting)
+    db.session.commit()
+
+    return jsonify({
+        "name": meeting.name,
+        "location": meeting.location,
+        "private": meeting.private,
+        "allow_registration": meeting.allow_registration,
+        "owner_key": meeting.owner_key,
+        "guest_key": meeting.guest_key,
+        "options": meeting.options
+    })
 
 @blueprint.route('/:id/create_users', methods=['POST'])
 def create_users():

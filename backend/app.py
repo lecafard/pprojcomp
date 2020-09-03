@@ -1,14 +1,21 @@
 from flask import Flask, jsonify
-import connections.sql
+from flask_jsonschema_validator import JSONSchemaValidator
+
+import config
+from connections.sql import db
 
 from blueprints.owner import blueprint as owner
 from blueprints.guest import blueprint as guest
 
 app = Flask(__name__)
+JSONSchemaValidator(app=app, root="schemas")
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = config.POSTGRES_CONNECTION
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
-# TODO: connect to database
-
+with app.app_context():
+    db.create_all()
 
 # register blueprints
 app.register_blueprint(owner, url_prefix='/owner')
