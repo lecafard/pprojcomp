@@ -29,3 +29,7 @@ def page_not_found(e):
 @app.errorhandler(405)
 def method_not_allowed(e):
     return jsonify({"error": "MethodNotAllowed"}), 405
+
+@app.errorhandler(401)
+def method_not_allowed(e):
+    return jsonify({"error": "Unauthorized"}), 401

@@ -1,4 +1,4 @@
-entry = {
+schedule = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://pprojcomp.ceebs.dev/schema/entries.json",
   "description": "Schedule entries.",
@@ -28,6 +28,43 @@ entry = {
   }
 }
 
+auth = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pprojcomp.ceebs.dev/schema/auth.json",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "password": {
+      "type": "string"
+    }
+  },
+  "required": ["name", "password"]
+}
+
+guest_auth = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pprojcomp.ceebs.dev/schema/guest_auth.json",
+  "description": "Guest entry object",
+  "type": "object",
+  "properties": {
+    "auth": auth
+  },
+  "required": ["auth"]
+}
+
+guest_entry = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pprojcomp.ceebs.dev/schema/guest_entries.json",
+  "description": "Guest entry object",
+  "type": "object",
+  "properties": {
+    "auth": auth,
+    "schedule": schedule
+  },
+  "required": ["auth", "schedule"]
+}
 
 schedule = {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -71,7 +108,7 @@ schedule = {
       "minimum": 0,
       "maximum": 86400
     },
-    "entries": entry
+    "schedules": schedule
   },
   "allOf": [
     {

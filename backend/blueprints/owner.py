@@ -16,15 +16,18 @@ def hello_world():
 
 
 
-class NewInput(Inputs):
-    json = [JsonSchema(schema=schemas.meeting)]
+
 
 @blueprint.route('/new', methods=['POST'])
 def new_schedule():
     """
     Creates a new schedule.
     """
-    inputs = NewInput(request)
+
+    class Validator(Inputs):
+        json = [JsonSchema(schema=schemas.meeting)]
+    inputs = Validator(request)
+    
     if not inputs.validate():
         return jsonify(success=False, errors=inputs.errors)
 
