@@ -1,4 +1,5 @@
 from connections.sql import db
+from datetime import datetime
 
 
 class Meeting(db.Model):
@@ -12,6 +13,7 @@ class Meeting(db.Model):
     private = db.Column(db.Boolean, nullable=False, default=False)
     allow_registration = db.Column(db.Boolean, nullable=False, default=True)
     options = db.Column(db.JSON)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
     entries = db.relationship("Entry")
 
 
