@@ -1,0 +1,16 @@
+.schedule {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+    grid-auto-flow: column;
+    row-gap: 5px;
+    column-gap: 5px;
+    height: 600px;
+    width: 500px;
+}
+
+.cell {
+    height: 40px;
+    background-color: teal;
+    border: black solid;
+}

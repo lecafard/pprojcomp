@@ -1,7 +1,11 @@
 import React from 'react';
 
+import Schedule from '../../components/schedule';
+
 function GuestPage() {
-    return (<div>New</div>);
+  return (
+    <Schedule/>
+  );
 }
 
 export default GuestPage;
