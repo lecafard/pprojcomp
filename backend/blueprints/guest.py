@@ -62,10 +62,10 @@ def login(_id):
             request.json["auth"]["password"].encode("ascii"),
             entry.password.encode("ascii")):
         
-            return jsonify({"schedule": entry.schedule, "notes": entry.notes})
+            return jsonify({"availability": entry.availability, "notes": entry.notes})
     elif not entry and res.allow_registration:
         # return an empty schedule and notes, but don't create the schedule just yet
-        return jsonify({"schedule": [], "notes": ""})
+        return jsonify({"availability": "", "notes": ""})
 
     # credentials are invalid and/or allow_registration is set to false
     abort(401)

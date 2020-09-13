@@ -1,36 +1,41 @@
-schedule = {
+# use 15 minute increments instead of 86400 seconds
+
+entry = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/entries.json",
   "description": "Schedule entries.",
   "type": "array",
   "items": {
     "type": "object",
     "properties": {
       "from": {
-        "type": "number",
+        "type": "integer",
         "minimum": 0,
-        "maximum": 86400
+        "maximum": 96
       },
       "to": {
-        "type": "number",
+        "type": "integer",
         "minimum": 0,
-        "maximum": 86400
+        "maximum": 96
       },
-      "name": {
-        "type": "string",
-        "minLength": 1
+      "day": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "on": {
+        "type": "boolean"
       }
     },
     "required": [
       "from",
-      "to"
+      "to",
+      "day",
+      "on"
     ]
   }
 }
 
 auth = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/auth.json",
   "properties": {
     "name": {
       "type": "string",
@@ -45,7 +50,6 @@ auth = {
 
 guest_auth = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/guest_auth.json",
   "description": "Guest entry object",
   "type": "object",
   "properties": {
@@ -56,20 +60,18 @@ guest_auth = {
 
 guest_entry = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/guest_entries.json",
   "description": "Guest entry object",
   "type": "object",
   "properties": {
     "auth": auth,
-    "schedule": schedule
+    "entry": entry
   },
-  "required": ["auth", "schedule"]
+  "required": ["auth", "entry"]
 }
 
-schedule = {
+options = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/schedule.json",
-  "description": "A schedule",
+  "description": "Schedule options",
   "type": "object",
   "properties": {
     "type": {
@@ -94,21 +96,22 @@ schedule = {
       "items": {
         "type": "string",
         "format": "date"
-      }
+      },
+      "minItems": 1,
+      "maxItems": 30
     },
     "minTime": {
-      "type": "number",
+      "type": "integer",
       "description": "Earliest possible time for meeting",
       "minimum": 0,
-      "maximum": 86400
+      "maximum": 96
     },
     "maxTime": {
-      "type": "number",
+      "type": "integer",
       "description": "Latest possible time for meeting",
       "minimum": 0,
-      "maximum": 86400
-    },
-    "schedules": schedule
+      "maximum": 96
+    }
   },
   "allOf": [
     {
@@ -151,7 +154,6 @@ schedule = {
 
 meeting = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://pprojcomp.ceebs.dev/schema/meeting.json",
   "description": "Meeting Object",
   "type": "object",
   "properties": {
@@ -176,7 +178,7 @@ meeting = {
       "type": "string",
       "description": "Meeting ID (guest)"
     },
-    "schedule": schedule
+    "options": options
   },
   "required": [
     "name",

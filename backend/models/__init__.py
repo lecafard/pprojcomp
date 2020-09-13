@@ -26,7 +26,7 @@ class Entry(db.Model):
     meeting_id = db.Column(db.Integer, db.ForeignKey('meetings.id'), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(64))
-    schedule = db.Column(db.JSON)
+    availability = db.Column(db.Blob(250))
     notes = db.Column(db.Text)
 
     db.UniqueConstraint("meeting_id", "name", name="meeting_id_name_key")
