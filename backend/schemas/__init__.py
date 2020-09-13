@@ -1,4 +1,5 @@
 # use 15 minute increments instead of 86400 seconds
+# data objects used for validation
 
 entry = {
   "$schema": "http://json-schema.org/draft-07/schema#",
@@ -38,6 +39,17 @@ auth = {
     }
   },
   "required": ["name", "password"]
+}
+
+admin_delete = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": ["name"]
 }
 
 guest_auth = {

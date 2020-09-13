@@ -8,29 +8,10 @@ import math
 from bitarray import bitarray
 
 from models import db, Meeting, Entry
-from models import db, Meeting
 import schemas
+from util import create_user
 
 blueprint = Blueprint('guest', __name__)
-
-def create_user(meeting_id, name, password, schedule=[], notes=""):
-    digest = ""
-    if password:
-        # hash the digest
-        digest = bcrypt.hashpw(
-            password.encode("ascii"),
-            bcrypt.gensalt()
-        ).decode("ascii")
-    
-    # create new entry
-    entry = Entry(
-        meeting_id=meeting_id,
-        name=name,
-        password=digest,
-        availability=b"",
-        notes=""
-    )
-    return entry
 
 
 def login(meeting_id, name, password):
@@ -115,6 +96,7 @@ def get_meeting(_id):
         success=True,
         data={
             "name": res.name,
+            "guest_key": meeting.guest_key,
             "location": res.location,
             "private": res.private,
             "allow_registration": res.allow_registration,
@@ -123,6 +105,14 @@ def get_meeting(_id):
             "notes": notes
         }
     )
+
+@blueprint.route('/<_id>/ics', methods=['GET'])
+def get_ics(_id):
+    """
+    TODO: Returns an ICS of the meeting.
+    """
+
+    pass
 
 @blueprint.route('/<_id>/schedule', methods=['POST'])
 def update_schedule(_id):
@@ -153,6 +143,7 @@ def update_schedule(_id):
         entry = create_user(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
         db.session.add(entry)
 
+    # initialise bitfield to record dates
     data = request.json["entry"]
     if data["from"] > data["to"] or data["to"] > n_slots:
         return jsonify(success=False, error="invalid entry"), 400
@@ -188,7 +179,6 @@ def update_notes(_id):
     entry = login(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
     if not entry:
         entry = create_user(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
-        db.session.add(entry)
     
     entry.notes = request.json["notes"]
     db.session.commit()

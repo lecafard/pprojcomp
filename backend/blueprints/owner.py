@@ -5,6 +5,7 @@ import secrets
 import json
 import base64
 
+from util import create_user
 from models import db, Meeting, Entry
 import schemas
 
@@ -72,12 +73,66 @@ def new_schedule():
         }
     )
 
-@blueprint.route('/<_id>/create_users', methods=['POST'])
-def create_users(_id):
+@blueprint.route('/<_id>/delete_user', methods=['POST'])
+def delete_user(_id):
     """
-    Allows an admin to pre-create users (not MVP).
+    Delete a user.
     """
-    return jsonify(success=False, error="not implemented"), 501
+    class Validator(Inputs):
+        json = [JsonSchema(schema=schemas.admin_delete)]
+    inputs = Validator(request)
+    
+    if not inputs.validate():
+        return jsonify(success=False, error=inputs.errors), 400
+
+    res = Meeting.query.filter_by(owner_key=_id).first()
+    if res == None:
+        abort(404)
+    
+    entry = Entry.query.filter_by(meeting_id=res.id, name=request.json["name"]).first()
+    if not entry:
+        return jsonify(success=False, error="user not found"), 400
+
+    db.session.delete(entry)
+    db.session.commit()
+    
+    return jsonify(success=True)
+
+
+@blueprint.route('/<_id>/ics', methods=['GET'])
+def get_ics(_id):
+    """
+    TODO: Returns an ICS of the meeting.
+    """
+    
+    pass
+
+
+@blueprint.route('/<_id>/create_user', methods=['POST'])
+def post_create_user(_id):
+    """
+    Create a user.
+    """
+
+    class Validator(Inputs):
+        json = [JsonSchema(schema=schemas.auth)]
+    inputs = Validator(request)
+
+    if not inputs.validate():
+        return jsonify(success=False, error=inputs.errors), 400
+
+    res = Meeting.query.filter_by(owner_key=_id).first()
+    if res == None:
+        abort(404)
+    
+    entry = Entry.query.filter_by(meeting_id=res.id, name=request.json["name"]).first()
+    if entry:
+        return jsonify(success=False, error="user exists"), 400
+    
+    create_user(res.id, request.json["name"], request.json["password"])
+    db.session.commit()
+    
+    return jsonify(success=True)
 
 @blueprint.route('/<_id>', methods=['GET'])
 def get_meeting(_id):
