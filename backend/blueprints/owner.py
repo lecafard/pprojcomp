@@ -1,10 +1,11 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, abort
 from flask_inputs import Inputs
 from flask_inputs.validators import JsonSchema
 import secrets
 import json
+import base64
 
-from models import db, Meeting
+from models import db, Meeting, Entry
 import schemas
 
 
@@ -28,17 +29,20 @@ def new_schedule():
         return jsonify(success=False, error=inputs.errors)
     
     # additional validation for the options
+    if "options" not in request.json:
+        return json(success=False, error="options is a required property"), 400
+    
     options = request.json["options"]
     if options["minTime"] >= options["maxTime"]:
-        return jsonify(success=False, error="minTime is greater than maxTime")
+        return jsonify(success=False, error="minTime is greater than maxTime"), 400
     if options["type"] == "dates":
         try:
             options["dates"] = list(set(options["dates"]))
             options["dates"].sort()
             if len(options["dates"]) * (options["maxTime"] - options["minTime"]) > MAX_SLOTS:
-                return jsonify(success=False, error="too many timeslots")    
+                return jsonify(success=False, error="too many timeslots"), 400
         except ValueError:
-            return jsonify(success=False, error="invalid dates provided")
+            return jsonify(success=False, error="invalid dates provided"), 400
     
 
     owner_key = secrets.token_urlsafe(12)
@@ -50,7 +54,7 @@ def new_schedule():
         location=request.json["location"],
         private=request.json["private"],
         allow_registration=request.json["allow_registration"],
-        options={})
+        options=options)
     
     db.session.add(meeting)
     db.session.commit()
@@ -73,31 +77,58 @@ def create_users(_id):
     """
     Allows an admin to pre-create users (not MVP).
     """
-    return jsonify({"message": "not implemented"}), 501
+    return jsonify(success=False, error="not implemented"), 501
 
-@blueprint.route('/<_id>/schedule', methods=['GET'])
-def get_schedule(_id):
+@blueprint.route('/<_id>', methods=['GET'])
+def get_meeting(_id):
     """
-    Gets the overlaid schedules.
+    Retrieves the schedule metadata + schedule. Only return certain options based on the privacy
+    setting.
     """
+
+    res = Meeting.query.filter_by(owner_key=_id).first()
+    if res == None:
+        abort(404)
+
+    entries = Entry.query.filter_by(meeting_id=res.id).all()
+    schedules = { i.name: base64.b64encode(i.availability).decode("ascii") for i in entries }
+    notes = { i.name: i.notes for i in entries }
+
+
     return jsonify(
         success=True,
         data={
-            "stub1": "010001",
-            "stub2": "100001"
+            "name": res.name,
+            "location": res.location,
+            "private": res.private,
+            "allow_registration": res.allow_registration,
+            "guest_key": res.guest_key,
+            "options": res.options,
+            "schedules": schedules,
+            "notes": notes
         }
     )
 
-@blueprint.route('/<_id>/options', methods=['GET'])
-def get_options(_id):
-    """
-    Retrieves the schedule metadata.
-    """
-    return jsonify({"message": "current schedule"})
-
-@blueprint.route('/<_id>/options', methods=['POST'])
+@blueprint.route('/<_id>', methods=['POST'])
 def update_options(_id):
     """
-    Updates the schedule metadata, only certain fields such as privacy and name can be updated.
+    Updates the schedule metadata, ignores updates to options.
     """
-    return jsonify({"message": "current schedule"})
+
+    res = Meeting.query.filter_by(owner_key=_id).first()
+    if res == None:
+        abort(404)
+
+    class Validator(Inputs):
+        json = [JsonSchema(schema=schemas.meeting)]
+    inputs = Validator(request)
+    
+    if not inputs.validate():
+        return jsonify(success=False, error=inputs.errors), 400
+    
+    res.name = request.json["name"]
+    res.location = request.json["location"]
+    res.allow_registration = request.json["allow_registration"]
+    res.private = request.json["private"]
+    db.session.commit()
+    return jsonify(success=True)

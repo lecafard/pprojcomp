@@ -3,35 +3,27 @@
 entry = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "Schedule entries.",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "properties": {
-      "from": {
-        "type": "integer",
-        "minimum": 0,
-        "maximum": 96
-      },
-      "to": {
-        "type": "integer",
-        "minimum": 0,
-        "maximum": 96
-      },
-      "day": {
-        "type": "integer",
-        "minimum": 0
-      },
-      "on": {
-        "type": "boolean"
-      }
+  "type": "object",
+  "properties": {
+    "from": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1344
     },
-    "required": [
-      "from",
-      "to",
-      "day",
-      "on"
-    ]
-  }
+    "to": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1344
+    },
+    "state": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "from",
+    "to",
+    "state"
+  ]
 }
 
 auth = {
@@ -50,7 +42,7 @@ auth = {
 
 guest_auth = {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Guest entry object",
+  "description": "Guest auth object",
   "type": "object",
   "properties": {
     "auth": auth
@@ -69,6 +61,20 @@ guest_entry = {
   "required": ["auth", "entry"]
 }
 
+guest_notes = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Guest notes object",
+  "type": "object",
+  "properties": {
+    "auth": auth,
+    "notes": {
+      "type": "string",
+      "maxLength": 1024
+    }
+  },
+  "required": ["auth", "notes"]
+}
+
 options = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "Schedule options",
@@ -83,13 +89,9 @@ options = {
       ]
     },
     "days": {
-      "type": "array",
+      "type": "string",
       "description": "Days of the week",
-      "items": {
-        "type": "boolean"
-      },
-      "minItems": 7,
-      "maxItems": 7
+      "pattern": "[01]{7}"
     },
     "dates": {
       "type": "array",
@@ -162,6 +164,11 @@ meeting = {
       "description": "Meeting name",
       "minLength": 1
     },
+    "location": {
+      "type": "string",
+      "description": "Meeting location",
+      "minLength": 1
+    },
     "private": {
       "type": "boolean",
       "description": "Schedule privacy to guests"
@@ -182,6 +189,7 @@ meeting = {
   },
   "required": [
     "name",
+    "location",
     "private",
     "allow_registration"
   ]
