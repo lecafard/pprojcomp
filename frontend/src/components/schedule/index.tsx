@@ -11,7 +11,7 @@ function Schedule({days=7}: ScheduleProps) {
   for (let i = 0; i < days; i++) {
     grid[i] = [];
     for (let j = 0; j < 20; j++) {
-      grid[i].push(<div className={styles.cell}></div>);
+      grid[i].push(<div data-row={i} data-col={j} className={styles.cell}></div>);
     }
   }
 
