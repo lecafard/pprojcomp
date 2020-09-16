@@ -1,4 +1,5 @@
 from connections.sql import db
+from datetime import datetime
 
 
 class Meeting(db.Model):
@@ -12,6 +13,7 @@ class Meeting(db.Model):
     private = db.Column(db.Boolean, nullable=False, default=False)
     allow_registration = db.Column(db.Boolean, nullable=False, default=True)
     options = db.Column(db.JSON)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
     entries = db.relationship("Entry")
 
 
@@ -26,7 +28,7 @@ class Entry(db.Model):
     meeting_id = db.Column(db.Integer, db.ForeignKey('meetings.id'), nullable=False)
     name = db.Column(db.String(32), nullable=False)
     password = db.Column(db.String(64))
-    schedule = db.Column(db.JSON)
-    notes = db.Column(db.Text)
+    availability = db.Column(db.LargeBinary(250))
+    notes = db.Column(db.String(250))
 
     db.UniqueConstraint("meeting_id", "name", name="meeting_id_name_key")
