@@ -7,22 +7,32 @@ interface ScheduleProps {
 }
 
 function Schedule({days=7}: ScheduleProps) {
+  const [mouseDown, setMouseDown] = useState(false);
+  const [startState, setStartState] = useState(false);
   const [clickStart, setClickStart] = useState([null, null]);
   const [clickEnd, setClickEnd] = useState([null, null]);
   const grid = constructScheduleGrid(days);
 
   useEffect(() => {
-    const [startRow, startCol] = clickStart;
-    const [endRow, endCol] = clickEnd;
+    const [r1, c1] = clickStart;
+    const [r2, c2] = clickEnd;
 
-    console.log(startRow, startCol);
+    const startRow = Math.min(r1, r2);
+    const endRow = Math.max(r1, r2);
+    const startCol = Math.min(c1, c2);
+    const endCol = Math.max(c1, c2);
 
     for (let row of grid) {
       for (let cell of row) {
         const row = cell.props["data-row"];
         const col = cell.props["data-col"];
-        if (row && row >= startRow && col >= startCol && row <= endRow && col <= endCol) {
-          document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.toggle(styles.selected);
+        if (row && row >= startRow && col >= startCol 
+            && row <= endRow && col <= endCol) {
+          if (!startState) {
+            document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.add(styles.selected);
+          } else {
+            document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.remove(styles.selected);
+          }
         }
       }
     }
@@ -31,13 +41,20 @@ function Schedule({days=7}: ScheduleProps) {
   return (
     <div className={styles.schedule} 
       onMouseDown={e => {
+        setMouseDown(true);
         const cell = e.target as HTMLDivElement;
+        setStartState(cell.classList.contains(styles.selected));
+        console.log(cell.classList);
         setClickStart([cell.dataset.row, cell.dataset.col]);
       }}
-      onMouseUp={e => {
+      onMouseOver={e => {
+        if (!mouseDown) return;
         const cell = e.target as HTMLDivElement;
+        if (!cell.dataset.row) return;
+        console.log(cell);
         setClickEnd([cell.dataset.row, cell.dataset.col]);
       }}
+      onMouseUp={() => setMouseDown(false)}
     >
       {grid.map(row => {
         return row.map(col => col);
