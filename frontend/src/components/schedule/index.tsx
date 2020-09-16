@@ -7,12 +7,25 @@ interface ScheduleProps {
 }
 
 function Schedule({days=7}: ScheduleProps) {
-  const [clickStart, setClickStart] = useState(null);
-  const [clickEnd, setClickEnd] = useState(null);
+  const [clickStart, setClickStart] = useState([null, null]);
+  const [clickEnd, setClickEnd] = useState([null, null]);
   const grid = constructScheduleGrid(days);
 
   useEffect(() => {
-    console.log(clickEnd);
+    const [startRow, startCol] = clickStart;
+    const [endRow, endCol] = clickEnd;
+
+    console.log(startRow, startCol);
+
+    for (let row of grid) {
+      for (let cell of row) {
+        const row = cell.props["data-row"];
+        const col = cell.props["data-col"];
+        if (row && row >= startRow && col >= startCol && row <= endRow && col <= endCol) {
+          document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.toggle(styles.selected);
+        }
+      }
+    }
   }, [clickEnd]);
 
   return (
