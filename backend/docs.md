@@ -46,3 +46,75 @@ the data is stored as a string of bits within the database for efficiency.
 data is currently returned to the frontend as a big-endian base64 string. the number of slots is
 determined by (maxTime - minTime) * num_days. slots from all days are stored in 1 contigious string.
 
+## api calls and payloads
+POST /owner/new
+```json
+{
+  "name": "something",
+  "location": "something",
+  "private": false,
+  "allow_registration": true,
+  "options": {
+    "type": "day|date", // either day or date
+    "dates": ["2020-01-01", "2020-01-02"], // if date, specify comma separated list of dates
+    "days": "1011111", // 7-long list of days for meeting (mon to sun)
+    "minTime": 0, // earliest scheduled 15-minute block for meeting
+    "maxTime": 96 // latest scheduled 15 minute block for meeting
+  }
+}
+```
+creates a new meeting and returns guest and owner keys
+
+POST /owner/<owner_key>/create_user
+{
+  "name": "a person",
+  "password": ""
+}
+
+creates a user from the admin side, useful when allow_registration is false
+
+POST /owner/<owner_key>/delete_user
+{
+  "name": "a person"
+}
+
+deletes a user from the admin side
+
+POST /guest/<guest_key>/auth
+```json
+{
+  "name": "a new person",
+  "password": ""
+}
+```
+allows you to get the guests schedule and notes. guest schedules are returned as base64 encoded bits (eg 1000101)
+
+POST /guest/<guest_key>/schedule
+```json
+{
+  "auth": {
+    "name": "a person",
+    "password": ""
+  },
+  "entry": {
+    "from": 0,
+    "to": 40,
+    "state": true // available/not available
+  }
+}
+```
+
+modify a guest's schedule. 
+
+POST /guest/<guest_key>/notes
+```json
+{
+  "auth": {
+    "name": "a person",
+    "password": ""
+  },
+  "notes": "text"
+}
+```
+
+modify a guest's notes
