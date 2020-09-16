@@ -39,7 +39,7 @@ function Schedule({days=7}: ScheduleProps) {
   }, [clickEnd]);
 
   return (
-    <div className={styles.schedule} 
+    <div className={`${styles.schedule} ${styles.unselectable}`} 
       onMouseDown={e => {
         setMouseDown(true);
         const cell = e.target as HTMLDivElement;
@@ -72,13 +72,13 @@ function constructScheduleGrid(days: number) {
       grid[0][0] = <div></div>;
       for (let j = 1; j < 20; j++) {
         // TODO: Figure out time logic
-        grid[i].push(<label className={styles.unselectable} data-col={i} data-row={j}>Time</label>);
+        grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>Time</label>);
       }
     } else {
       for (let j = 0; j < 20; j++) {
         if (j === 0) {
           // TODO: Figure out date logic
-          grid[i].push(<label className={styles.unselectable} data-col={i} data-row={j}>Day</label>)
+          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>Day</label>)
         } else {
           grid[i].push(<div data-col={i} data-row={j} className={styles.cell}></div>);
         }
