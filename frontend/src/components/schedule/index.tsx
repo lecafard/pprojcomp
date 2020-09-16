@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from "./style.module.css";
 
@@ -7,10 +7,25 @@ interface ScheduleProps {
 }
 
 function Schedule({days=7}: ScheduleProps) {
+  const [clickStart, setClickStart] = useState(null);
+  const [clickEnd, setClickEnd] = useState(null);
   const grid = constructScheduleGrid(days);
 
+  useEffect(() => {
+    console.log(clickEnd);
+  }, [clickEnd]);
+
   return (
-    <div className={styles.schedule}>
+    <div className={styles.schedule} 
+      onMouseDown={e => {
+        const cell = e.target as HTMLDivElement;
+        setClickStart([cell.dataset.row, cell.dataset.col]);
+      }}
+      onMouseUp={e => {
+        const cell = e.target as HTMLDivElement;
+        setClickEnd([cell.dataset.row, cell.dataset.col]);
+      }}
+    >
       {grid.map(row => {
         return row.map(col => col);
       })}
