@@ -2,9 +2,13 @@ import React from 'react';
 
 import Schedule from '../../components/schedule';
 
+import style from "./style.module.css";
+
 function GuestPage() {
   return (
-    <Schedule/>
+    <div className="is-center" style={{marginTop: "20px"}}>
+      <Schedule/>
+    </div>
   );
 }
 
