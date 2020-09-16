@@ -13,5 +13,24 @@ body.dark {
 #app {
   display: flex;
   flex-direction: column;
-  --bg-theme: #0091ca;
+  /* --bg-theme: #0091ca; */
+}
+
+/* https://codepen.io/P1N2O/pen/pyBNzX */
+body {
+	background: linear-gradient(-45deg, #3523d5, #2370d5, #23ccd5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
