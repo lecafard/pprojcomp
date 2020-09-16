@@ -27,13 +27,13 @@ function constructScheduleGrid(days: number) {
       grid[0][0] = <div></div>;
       for (let j = 1; j < 20; j++) {
         // TODO: Figure out time logic
-        grid[i].push(<div data-col={i} data-row={j}>Time</div>);
+        grid[i].push(<label className={styles.unselectable} data-col={i} data-row={j}>Time</label>);
       }
     } else {
       for (let j = 0; j < 20; j++) {
         if (j === 0) {
           // TODO: Figure out date logic
-          grid[i].push(<div data-col={i} data-row={j}>Day</div>)
+          grid[i].push(<label className={styles.unselectable} data-col={i} data-row={j}>Day</label>)
         } else {
           grid[i].push(<div data-col={i} data-row={j} className={styles.cell}></div>);
         }
@@ -43,5 +43,6 @@ function constructScheduleGrid(days: number) {
 
   return grid;
 }
+
 
 export default Schedule;
