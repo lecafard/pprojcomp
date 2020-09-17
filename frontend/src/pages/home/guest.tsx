@@ -1,15 +1,26 @@
-import React from "react";
+import React, {useState} from "react";
+import { Link } from "react-router-dom";
 
 function Guest() {
+    const [inputValue, setInputValue] = useState<string>('');
+
+    function handleChange(e: any) {
+        setInputValue(e.target.value)
+    }
+
     return (<>
     <h1 className="is-center">Have a Guest Code?</h1>
     <form>
-        {/* TODO: link form up to logic */}
         <p>
             <label>Guest Code</label>
-            <input name="name" />
+            <input name="name" value={inputValue} onChange={handleChange}/>
         </p>
-        <button type="submit">Join!</button>
+
+        <Link to={inputValue ? `/g/${inputValue}` : '/'}>
+         <button type="submit">
+              Join!
+         </button>
+       </Link>
     </form></>);
 }
 
