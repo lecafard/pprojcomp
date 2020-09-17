@@ -114,13 +114,13 @@ options = {
       "minItems": 1,
       "maxItems": 30
     },
-    "minTime": {
+    "min_time": {
       "type": "integer",
       "description": "Earliest possible time for meeting",
       "minimum": 0,
       "maximum": 96
     },
-    "maxTime": {
+    "max_time": {
       "type": "integer",
       "description": "Latest possible time for meeting",
       "minimum": 0,
@@ -131,8 +131,8 @@ options = {
     {
       "required": [
         "type",
-        "minTime",
-        "maxTime"
+        "min_time",
+        "max_time"
       ]
     },
     {

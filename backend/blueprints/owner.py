@@ -34,13 +34,13 @@ def new_schedule():
         return json(success=False, error="options is a required property"), 400
     
     options = request.json["options"]
-    if options["minTime"] >= options["maxTime"]:
-        return jsonify(success=False, error="minTime is greater than maxTime"), 400
+    if options["min_time"] >= options["max_time"]:
+        return jsonify(success=False, error="min_time is greater than max_time"), 400
     if options["type"] == "dates":
         try:
             options["dates"] = list(set(options["dates"]))
             options["dates"].sort()
-            if len(options["dates"]) * (options["maxTime"] - options["minTime"]) > MAX_SLOTS:
+            if len(options["dates"]) * (options["max_time"] - options["min_time"]) > MAX_SLOTS:
                 return jsonify(success=False, error="too many timeslots"), 400
         except ValueError:
             return jsonify(success=False, error="invalid dates provided"), 400

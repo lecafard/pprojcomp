@@ -96,7 +96,7 @@ def get_meeting(_id):
         success=True,
         data={
             "name": res.name,
-            "guest_key": meeting.guest_key,
+            "guest_key": res.guest_key,
             "location": res.location,
             "private": res.private,
             "allow_registration": res.allow_registration,
@@ -132,9 +132,9 @@ def update_schedule(_id):
     
     # calculate number of slots
     if res.options["type"] == "day":
-        n_slots = (res.options["maxTime"] - res.options["minTime"]) * res.options["days"].count("1")
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * res.options["days"].count("1")
     elif res.options["type"] == "date":
-        n_slots = (res.options["maxTime"] - res.options["minTime"]) * len(res.options["dates"])
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * len(res.options["dates"])
     else:
         abort(500)
 
