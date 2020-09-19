@@ -22,13 +22,19 @@ function GuestPage() {
   if (!eventDetails?.data) return null;
 
   return (
-    <div className={`${style["schedule-container"]} is-center`} style={{marginTop: "20px"}}>
-      <Schedule 
-        dates={eventDetails.data.options.type === "day" ? 
-                constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-        }
-        times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
-      />
+    <div className={`${style.container} row`} style={{width: "95%"}}>
+      <div className={`${style["schedule-container"]} is-center col`} style={{marginTop: "20px"}}>
+        <Schedule 
+          dates={eventDetails.data.options.type === "day" ? 
+                  constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+          }
+          times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+        />
+      </div>
+
+      <div className={`col`} style={{height: "100%"}}>
+        a
+      </div>
     </div>
   );
 }
