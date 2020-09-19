@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 
 import Schedule from '../../components/schedule';
 
+import style from "./style.module.css";
+
 const path = window.location.pathname.split('/');
 const guestId = path[path.length - 1];
 
@@ -20,7 +22,7 @@ function GuestPage() {
   if (!eventDetails?.data) return null;
 
   return (
-    <div className="is-center" style={{marginTop: "20px"}}>
+    <div className={`${style["schedule-container"]} is-center`} style={{marginTop: "20px"}}>
       <Schedule 
         dates={eventDetails.data.options.type === "day" ? 
                 constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates

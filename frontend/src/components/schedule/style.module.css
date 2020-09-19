@@ -5,6 +5,8 @@
     grid-auto-flow: column;
     column-gap: 1px;
     row-gap: 1px;
+    max-height: 100%;
+    overflow-y: scroll;
 }
 
 .cell {
@@ -29,5 +31,12 @@
 
 .label {
     line-height: initial;
+    margin: auto;
+    font-size: 12px;
+    text-align: center;
+}
+
+.date {
+    font-size: 10px;
     margin: auto;
 }
