@@ -49,7 +49,8 @@ function Schedule({dates=["Monday"], times}: ScheduleProps) {
   return (
     <div className={`${styles.schedule} ${styles.unselectable}`} 
       style={{gridTemplateColumns: `repeat(${dates.length + 1}, 1fr)`,
-              gridTemplateRows: `repeat(${times.length + 1}, 1fr)`}}
+              gridTemplateRows: `repeat(${times.length + 1}, 1fr)`,
+              maxHeight: "50vh"}}
       onMouseDown={e => {
         setMouseDown(true);
         const cell = e.target as HTMLDivElement;

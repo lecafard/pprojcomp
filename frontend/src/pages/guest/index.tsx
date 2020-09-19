@@ -24,23 +24,46 @@ function GuestPage() {
   return (
     <div className={`container`}>
       <div className={`row`}>
-        <h1>
+        <h2>
           {eventDetails.data.name}
-        </h1>
+        </h2>
       </div>
 
       <div className={`row`}>
-        <div className={`is-center col`} style={{maxHeight: "75vh"}}>
-          <Schedule 
-            dates={eventDetails.data.options.type === "day" ? 
-                    constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-            }
-            times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
-          />
+        <div className={`col`} style={{display: "flex"}}>
+          <div className="container">
+            <div className="row">
+              <h3 className="is-center">
+                Select your availability  
+              </h3>
+            </div>
+            <div className="row is-center">
+              <Schedule 
+                dates={eventDetails.data.options.type === "day" ? 
+                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                }
+                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+              />
+            </div>
+          </div>
         </div>
 
         <div className={`col`} style={{height: "100%"}}>
-          a
+          <div className="container">
+            <div className="row">
+              <h3 className="is-center">
+                Group availability  
+              </h3>
+            </div>
+            <div className="row is-center">
+              <Schedule 
+                dates={eventDetails.data.options.type === "day" ? 
+                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                }
+                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
