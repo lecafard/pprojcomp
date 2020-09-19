@@ -1,0 +1,13 @@
+.view {
+    background-color: #fff;
+    height: 100%;
+}
+
+.eventDetails {
+    text-align: center;
+}
+
+.eventDetails h3 {
+    line-height: 12px;
+    margin-top: 30px
+}

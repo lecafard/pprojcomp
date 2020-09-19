@@ -22,24 +22,28 @@ function GuestPage() {
   if (!eventDetails?.data) return null;
 
   return (
-    <div className={`container`}>
-      <div className={`row`}>
-        <h2>
+    <div className={` ${style.view}`}>
+    <div className="container">
+    <div className={` ${style.eventDetails}`}>
+        <h3>
           {eventDetails.data.name}
-        </h2>
-      </div>
+        </h3>
+        <h4>
+          {eventDetails.data.location}
+        </h4>
+    </div>
 
       <div className={`row`}>
         <div className={`col`} style={{display: "flex"}}>
           <div className="container">
             <div className="row">
               <h3 className="is-center">
-                Select your availability  
+                Select your availability
               </h3>
             </div>
             <div className="row is-center">
-              <Schedule 
-                dates={eventDetails.data.options.type === "day" ? 
+              <Schedule
+                dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
                 times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
@@ -52,12 +56,12 @@ function GuestPage() {
           <div className="container">
             <div className="row">
               <h3 className="is-center">
-                Group availability  
+                Group availability
               </h3>
             </div>
             <div className="row is-center">
-              <Schedule 
-                dates={eventDetails.data.options.type === "day" ? 
+              <Schedule
+                dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
                 times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
@@ -66,6 +70,7 @@ function GuestPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
@@ -89,7 +94,7 @@ function constructTimes(minTime: number, maxTime: number) {
   for (let i = 1; i < maxTime; i++) {
     times.push(times[i - 1].add(15, "minute"));
   }
-  
+
   return times.slice(minTime);
 }
 
