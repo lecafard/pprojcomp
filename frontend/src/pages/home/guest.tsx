@@ -3,9 +3,20 @@ import { Link } from "react-router-dom";
 
 function Guest() {
     const [inputValue, setInputValue] = useState<string>('');
+    const [success, setSuccess] = useState<boolean>(false);
 
-    function handleChange(e: any) {
-        setInputValue(e.target.value)
+
+    async function handleChange(e: any) {
+        (async function check (n) {
+            setInputValue(n)
+            let r = await fetch(`/api/guest/${n}`)
+            if (r.status === 200) {
+                setSuccess(true)
+            } else {
+                setSuccess(false)
+                console.log("no meeting with id ", n)
+            }
+        })(e.target.value)
     }
 
     return (<>
@@ -13,11 +24,11 @@ function Guest() {
     <form>
         <p>
             <label>Guest Code</label>
-            <input name="name" value={inputValue} onChange={handleChange}/>
+            <input name="name" onChange={handleChange}/>
         </p>
 
-        <Link to={inputValue ? `/g/${inputValue}` : '/'}>
-         <button type="submit">
+        <Link to={success ? `/g/${inputValue}` : '/'}>
+         <button type={success ? "submit" : "button"}>
               Join!
          </button>
        </Link>
