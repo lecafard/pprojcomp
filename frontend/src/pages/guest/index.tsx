@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 import Schedule from '../../components/schedule';
 
@@ -25,6 +26,7 @@ function GuestPage() {
           dates={eventDetails.data.options.type === "day" ? 
                   constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
           }
+          times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
         />
       </div>
     );
@@ -47,6 +49,15 @@ function constructDays(days) {
   const outputDays = [];
   for (let i in days) if (days[i] === "1") outputDays.push(weekDays[i]);
   return outputDays;
+}
+
+function constructTimes(minTime: number, maxTime: number) {
+  const times = [dayjs().hour(0).minute(0)];
+  for (let i = 1; i < maxTime; i++) {
+    times.push(times[i - 1].add(15, "minute"));
+  }
+  
+  return times.slice(minTime);
 }
 
 export default GuestPage;
