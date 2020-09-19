@@ -5,6 +5,14 @@ import Schedule from '../../components/schedule';
 
 import style from "./style.module.css";
 
+function ErrorBox(props: any) {
+    return (
+        <div className={`container ${style.errorBox}`}>
+            <h3> {props.code} :( </h3>
+        </div>
+    )
+}
+
 const path = window.location.pathname.split('/');
 const guestId = path[path.length - 1];
 
@@ -19,7 +27,30 @@ function GuestPage() {
     })();
   }, []);
 
-  if (!eventDetails?.data) return null;
+  useEffect(() => {
+      if (eventDetails?.data) {
+          let thisMeeting = {
+              "id": eventDetails.data.guest_key,
+              "name": eventDetails.data.name,
+              "location": eventDetails.data.location
+          }
+          let arr = JSON.parse(localStorage.getItem("myMeetings"))
+          if (arr === null) {
+              localStorage.setItem("myMeetings", JSON.stringify({"meetingsList": [thisMeeting]}));
+          } else {
+              arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== eventDetails.data.guest_key)
+              arr['meetingsList'].push(thisMeeting)
+              localStorage.setItem("myMeetings", JSON.stringify({"meetingsList": arr['meetingsList']}));
+          }
+          console.log(localStorage.getItem("myMeetings"))
+      }
+  }, [eventDetails])
+
+  if (!eventDetails?.data) {
+      return (
+          <ErrorBox code={"Couldn't find meeting " + guestId}/>
+      )
+  };
 
   return (
     <div className={` ${style.view}`}>
