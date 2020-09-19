@@ -21,7 +21,9 @@ function ManageListPage() {
     return (<div className={` ${style.view}`}>
         {JSON.parse(localStorage.getItem("myMeetings"))['meetingsList']
           .map((meeting) => (
+            <a href={`/g/${meeting.id}`}>
               <ListItem id={meeting.id} name={meeting.name} location={meeting.location}/>
+            </a>
           ))
         }
 
