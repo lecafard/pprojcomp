@@ -14,6 +14,12 @@ body.dark {
   display: flex;
   flex-direction: column;
   /* --bg-theme: #0091ca; */
+
+  --color-error: #EF476F;
+  --color-warning: #FFD166;
+  --color-success: #06D6A0;
+  --color-info: #118AB2;
+  --color-primary: #073B4C;
 }
 
 /* https://codepen.io/P1N2O/pen/pyBNzX */

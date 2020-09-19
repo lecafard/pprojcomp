@@ -17,9 +17,9 @@ function Guest() {
         </p>
 
         <Link to={inputValue ? `/g/${inputValue}` : '/'}>
-         <button type="submit">
-              Join!
-         </button>
+            <button type="submit" className="button is-info">
+                Join!
+            </button>
        </Link>
     </form></>);
 }
