@@ -3,15 +3,15 @@ import React, { useEffect, useState } from 'react';
 import styles from "./style.module.css";
 
 interface ScheduleProps {
-  days?: number;
+  dates?: Array<string>;
 }
 
-function Schedule({days=7}: ScheduleProps) {
+function Schedule({dates=["Monday"]}: ScheduleProps) {
   const [mouseDown, setMouseDown] = useState(false);
   const [startState, setStartState] = useState(false);
   const [clickStart, setClickStart] = useState([null, null]);
   const [clickEnd, setClickEnd] = useState([null, null]);
-  const grid = constructScheduleGrid(days);
+  const grid = constructScheduleGrid(dates.length + 1, dates);
 
   useEffect(() => {
     const [r1, c1] = clickStart;
@@ -44,14 +44,12 @@ function Schedule({days=7}: ScheduleProps) {
         setMouseDown(true);
         const cell = e.target as HTMLDivElement;
         setStartState(cell.classList.contains(styles.selected));
-        console.log(cell.classList);
         setClickStart([cell.dataset.row, cell.dataset.col]);
       }}
       onMouseOver={e => {
         if (!mouseDown) return;
         const cell = e.target as HTMLDivElement;
         if (!cell.dataset.row) return;
-        console.log(cell);
         setClickEnd([cell.dataset.row, cell.dataset.col]);
       }}
       onMouseUp={() => setMouseDown(false)}
@@ -63,7 +61,7 @@ function Schedule({days=7}: ScheduleProps) {
   );
 }
 
-function constructScheduleGrid(days: number) {
+function constructScheduleGrid(days: number, dates: Array<string>) {
   const grid = Array.from(Array(days));
   
   for (let i = 0; i < days; i++) {
@@ -78,7 +76,7 @@ function constructScheduleGrid(days: number) {
       for (let j = 0; j < 20; j++) {
         if (j === 0) {
           // TODO: Figure out date logic
-          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>Day</label>)
+          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>{dates[i - 1]}</label>)
         } else {
           grid[i].push(<div data-col={i} data-row={j} className={styles.cell}></div>);
         }
@@ -88,6 +86,5 @@ function constructScheduleGrid(days: number) {
 
   return grid;
 }
-
 
 export default Schedule;
