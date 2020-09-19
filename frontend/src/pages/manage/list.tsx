@@ -1,4 +1,6 @@
 import React from "react";
+import style from "./style.module.css";
+import { Link } from "react-router-dom";
 
 interface ListItemProps {
     id: string,
@@ -8,19 +10,20 @@ interface ListItemProps {
 
 function ListItem(props: ListItemProps) {
     return (
-        <div>
-        <h2> {props.name} - {props.location} </h2>
+        <div className={`${style.listItem}`}>
+        <div className={`${style.title}`}> {props.name} </div>
+        <div className={`${style.title2}`}> {props.location} </div>
         guest key: {props.id}
         </div>
     )
 }
 function ManageListPage() {
-    return (<div>
-
+    return (<div className={` ${style.view}`}>
         {JSON.parse(localStorage.getItem("myMeetings"))['meetingsList']
-            .map((meeting) => (
-                <ListItem id={meeting.id} name={meeting.name} location={meeting.location}/>
-              ))}
+          .map((meeting) => (
+              <ListItem id={meeting.id} name={meeting.name} location={meeting.location}/>
+          ))
+        }
 
         </div>)
 }
