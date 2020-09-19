@@ -30,17 +30,16 @@ function Schedule({dates=["Monday"], times}: ScheduleProps) {
         const col = cell.props["data-col"];
         if (row && row >= startRow && col >= startCol 
             && row <= endRow && col <= endCol) {
-          if (!startState) {
-            document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.add(styles.selected);
-          } else {
-            document.querySelector(`[data-col='${col}'][data-row='${row}']`).classList.remove(styles.selected);
-          }
+          if (!startState) 
+            document.querySelector(`[data-col='${col}'][data-row='${row}']`)
+                    .classList.add(styles.selected);
+          else 
+            document.querySelector(`[data-col='${col}'][data-row='${row}']`)
+                    .classList.remove(styles.selected);
         }
       }
     }
   }, [clickEnd]);
-
-  console.log(dates)
 
   return (
     <div className={`${styles.schedule} ${styles.unselectable}`} 
@@ -69,23 +68,26 @@ function Schedule({dates=["Monday"], times}: ScheduleProps) {
 
 function constructScheduleGrid(dates: Array<string>, times: dayjs.Dayjs[]) {
   const grid = Array.from(Array(dates.length + 1));
-  console.log(times);
 
   for (let i = 0; i < dates.length + 1; i++) {
     grid[i] = [];
     if (i === 0) {
-      grid[0][0] = <div></div>;
+      grid[0][0] = <div/>;
       for (let j = 1; j < times.length + 1; j++) {
-        // TODO: Figure out time logic
-        grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>{times[j - 1].format("hh:mm a")}</label>);
+        grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
+                       {times[j - 1].format("hh:mm a")}
+                     </label>
+        );
       }
     } else {
       for (let j = 0; j < times.length + 1; j++) {
         if (j === 0) {
-          // TODO: Figure out date logic
-          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>{dates[i - 1]}</label>)
+          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
+                         {dates[i - 1]}
+                       </label>
+          );
         } else {
-          grid[i].push(<div data-col={i} data-row={j} className={styles.cell}></div>);
+          grid[i].push(<div data-col={i} data-row={j} className={styles.cell}/>);
         }
       }
     }
