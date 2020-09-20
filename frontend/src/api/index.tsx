@@ -4,7 +4,7 @@ class API {
     private wrapper: Wretcher = wretch().url("/api");
 
     public async newMeeting(meeting: Meeting) {
-        return await this.wrapper.url("/new")
+        return await this.wrapper.url("/owner/new")
             .post(meeting);
     }
 }

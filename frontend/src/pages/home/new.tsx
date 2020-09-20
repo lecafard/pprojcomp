@@ -1,16 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { MeetingOptions, MeetingType } from "../../api/schemas";
-import style from "./style.module.css";
+import { DAYS, DAY_SECONDS, SLOT_LENGTH } from "../../constants";
+import api from "../../api";
+import { Meeting } from "../../api/schemas";
+import dayjs from "dayjs";
 
 function New() {
     const { handleSubmit, register, watch, errors } = useForm();
-    const onSubmit = (values: any) => console.log(values);
+    const onSubmit = (values: any) => {
+        const meeting: Meeting = {
+            name: values.name,
+            location: values.location,
+            options: {
+                type: values.options.type,
+                min_time: parseInt(values.options.minTime),
+                max_time: parseInt(values.options.maxTime),
+            },
+            private: !!values.private,
+            allow_registration: !!values.allowRegistration
+        };
+
+        if (meeting.options.type === "day") {
+            meeting.options.days = values.options.days.map((v) => v ? "1" : 0).join("");
+        }
+        api.newMeeting(meeting);
+    };
     
     const type = watch("options[type]");
 
     return (<>
     <h1 className="is-center">Create a New Meeting</h1>
+    
     {Object.keys(errors).length ? (
         <blockquote style={{
             backgroundColor: "var(--color-error)"
@@ -18,6 +38,7 @@ function New() {
             An error occurred
         </blockquote>
     ) : null}
+    
     <form onSubmit={handleSubmit(onSubmit)}>
         <p>
             <label>Name</label>
@@ -60,12 +81,17 @@ function New() {
                 </li>
             </ul>
         </div>
-        { type === "day" ? "day" : null }
+        { type === "day" ? (<div>
+            {DAYS.map((day, i) => (<span key={i}>
+                <label>{day.substr(0,3)}</label>
+                <input type="checkbox" ref={register()} name={`options[days][${i}]`} />
+            </span>))}
+        </div>) : null }
         { type === "date" ? "date" : null }
         <p>
             <label>
                 <input
-                    name="options[private]"
+                    name="private"
                     type="checkbox"
                     value="day"
                     ref={register()}
@@ -75,7 +101,7 @@ function New() {
 
             <label>
             <input
-                    name="options[allow_registration]"
+                    name="allowRegistration"
                     type="checkbox"
                     value="day"
                     ref={register()}
@@ -84,7 +110,32 @@ function New() {
             </label>
         </p>
 
-        {/* TODO: add day selector/ date selector components */}
+        <label>Time from:</label>
+        <select name="options[minTime]" ref={register()}>
+            {Array.from(Array((DAY_SECONDS/SLOT_LENGTH)).keys()).map((v) => {
+                const time = dayjs().startOf('day').add((v)*SLOT_LENGTH, 'second');
+                return (
+                    <option key={v} value={v}>
+                        {`${time.hour().toString().padStart(2, '0')}:`+
+                        `${time.minute().toString().padStart(2, '0')}`}
+                    </option>
+                )
+            })}
+        </select>
+        
+        <label>Time to:</label>
+        <select name="options[maxTime]" ref={register()}>
+            {Array.from(Array((DAY_SECONDS/SLOT_LENGTH)).keys()).map((v) => {
+                const time = dayjs().startOf('day').add((v+1)*SLOT_LENGTH, 'second');
+                return (
+                    <option key={v+1} value={v+1}>
+                        {`${time.hour().toString().padStart(2, '0')}:`+
+                        `${time.minute().toString().padStart(2, '0')}`+
+                        `${time.day() != dayjs().day() ? ' +1' : ''}`}
+                    </option>
+                )
+            })}
+        </select>
 
         <button type="submit">Create!</button>
     </form></>);
