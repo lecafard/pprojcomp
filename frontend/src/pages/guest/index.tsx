@@ -47,7 +47,7 @@ function GuestPage() {
                 dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
-                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+                times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
                 timeHandler={setUserSelectedTimes}
               />
             </div>
@@ -66,7 +66,7 @@ function GuestPage() {
                 dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
-                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+                times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
                 userSelectedTimes={userSelectedTimes}
               />
             </div>
@@ -95,7 +95,7 @@ function constructDays(days: Array<string>) {
 function constructTimes(minTime: number, maxTime: number) {
   const times = [dayjs().hour(0).minute(0)];
   for (let i = 1; i < maxTime; i++) {
-    times.push(times[i - 1].add(15, "minute"));
+    times.push(times[i - 1].add(30, "minute"));
   }
 
   return times.slice(minTime);
