@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
-import Schedule from '../../components/schedule';
+import { ReadOnlySchedule, SubmitSchedule } from '../../components/schedule';
 
 import style from "./style.module.css";
 
@@ -42,7 +42,7 @@ function GuestPage() {
               </h3>
             </div>
             <div className="row is-center">
-              <Schedule
+              <SubmitSchedule
                 dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
@@ -60,7 +60,7 @@ function GuestPage() {
               </h3>
             </div>
             <div className="row is-center">
-              <Schedule
+              <ReadOnlySchedule
                 dates={eventDetails.data.options.type === "day" ?
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
