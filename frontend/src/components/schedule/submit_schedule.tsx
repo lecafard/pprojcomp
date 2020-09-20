@@ -42,6 +42,8 @@ function SubmitSchedule({dates=["Monday"], times}: SubmitScheduleProps) {
         }
       }
     }
+
+    console.log(getSelectedCells(grid));
   }, [clickEnd]);
 
   return (
@@ -68,6 +70,25 @@ function SubmitSchedule({dates=["Monday"], times}: SubmitScheduleProps) {
       })}
     </div>
   );
+}
+
+function getSelectedCells(grid) {
+  const selectedGrid = []
+  for (let i = 0; i < grid[0].length; i++) selectedGrid.push([]);
+
+  for (let row of grid) {
+    for (let cell of row) {
+      const row = cell.props["data-row"];
+      const col = cell.props["data-col"];
+
+      if (document.querySelector(`[data-col='${col}'][data-row='${row}']`)
+                  ?.classList.contains(styles.selected)) {
+        selectedGrid[row][col] = 1;
+      }
+    }
+  }
+  
+  return selectedGrid;
 }
 
 
