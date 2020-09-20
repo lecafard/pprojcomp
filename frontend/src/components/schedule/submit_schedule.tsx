@@ -9,9 +9,10 @@ import styles from "./style.module.css";
 interface SubmitScheduleProps {
   dates?: Array<string>;
   times: dayjs.Dayjs[];
+  timeHandler: any;
 }
 
-function SubmitSchedule({dates=["Monday"], times}: SubmitScheduleProps) {
+function SubmitSchedule({dates=["Monday"], times, timeHandler}: SubmitScheduleProps) {
   const [mouseDown, setMouseDown] = useState(false);
   const [startState, setStartState] = useState(false);
   const [clickStart, setClickStart] = useState([null, null]);
@@ -42,8 +43,6 @@ function SubmitSchedule({dates=["Monday"], times}: SubmitScheduleProps) {
         }
       }
     }
-
-    console.log(getSelectedCells(grid));
   }, [clickEnd]);
 
   return (
@@ -63,7 +62,10 @@ function SubmitSchedule({dates=["Monday"], times}: SubmitScheduleProps) {
         if (!cell.dataset.row) return;
         setClickEnd([cell.dataset.row, cell.dataset.col]);
       }}
-      onMouseUp={() => setMouseDown(false)}
+      onMouseUp={() => {
+        setMouseDown(false);
+        timeHandler(getSelectedCells(grid));
+      }}
     >
       {grid.map(row => {
         return row.map(col => col);

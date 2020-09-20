@@ -10,6 +10,7 @@ const guestId = path[path.length - 1];
 
 function GuestPage() {
   const [eventDetails, setEventDetails] = useState({} as any);
+  const [userSelectedTimes, setUserSelectedTimes] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -47,6 +48,7 @@ function GuestPage() {
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
                 times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+                timeHandler={setUserSelectedTimes}
               />
             </div>
           </div>
@@ -65,6 +67,7 @@ function GuestPage() {
                         constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                 }
                 times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
+                userSelectedTimes={userSelectedTimes}
               />
             </div>
           </div>
@@ -97,5 +100,7 @@ function constructTimes(minTime: number, maxTime: number) {
 
   return times.slice(minTime);
 }
+
+
 
 export default GuestPage;
