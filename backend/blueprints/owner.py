@@ -27,7 +27,7 @@ def new_schedule():
     inputs = Validator(request)
     
     if not inputs.validate():
-        return jsonify(success=False, error=inputs.errors)
+        return jsonify(success=False, error=inputs.errors), 400
     
     # additional validation for the options
     if "options" not in request.json:
