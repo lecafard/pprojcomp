@@ -118,13 +118,13 @@ options = {
       "type": "integer",
       "description": "Earliest possible time for meeting",
       "minimum": 0,
-      "maximum": 96
+      "maximum": 48
     },
     "max_time": {
       "type": "integer",
       "description": "Latest possible time for meeting",
       "minimum": 0,
-      "maximum": 96
+      "maximum": 48
     }
   },
   "allOf": [
