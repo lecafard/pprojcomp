@@ -4,6 +4,7 @@ from flask_inputs.validators import JsonSchema
 import secrets
 import json
 import base64
+from bitarray import bitarray
 
 from util import create_user
 from models import db, Meeting, Entry
@@ -15,6 +16,11 @@ blueprint = Blueprint('owner', __name__)
 # will impose arbitrary limit of 1344 slots (168 bytes)
 # however max days already 30
 MAX_SLOTS = 1344
+
+def binary_string(b: bytes):
+    s = bitarray()
+    s.frombytes(b)
+    return s.to01()
 
 @blueprint.route('/new', methods=['POST'])
 def new_schedule():
@@ -145,8 +151,16 @@ def get_meeting(_id):
     if res == None:
         abort(404)
 
+    # calculate number of slots
+    if res.options["type"] == "day":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * res.options["days"].count("1")
+    elif res.options["type"] == "date":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * len(res.options["dates"])
+    else:
+        abort(500)
+
     entries = Entry.query.filter_by(meeting_id=res.id).all()
-    schedules = { i.name: base64.b64encode(i.availability).decode("ascii") for i in entries }
+    schedules = { i.name: binary_string(i.availability)[:n_slots] for i in entries }
     notes = { i.name: i.notes for i in entries }
 
 
