@@ -4,104 +4,106 @@ import dayjs from 'dayjs';
 import Schedule from '../../components/schedule';
 
 import style from "./style.module.css";
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import api from '../../api';
 
 function ErrorBox(props: any) {
-    return (
-        <div className={`container ${style.errorBox}`}>
-            <h3> {props.code} :( </h3>
-        </div>
-    )
+  return (
+    <div className={`container ${style.errorBox}`}>
+      <h3> {props.code} :( </h3>
+    </div>
+  )
 }
 
-const path = window.location.pathname.split('/');
-const guestId = path[path.length - 1];
 
-function GuestPage() {
-  const [eventDetails, setEventDetails] = useState({} as any);
+function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id: string }>) {
+  const [eventDetails, setEventDetails] = useState(null);
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/guest/${guestId}`);
-      const json = await res.json();
-      setEventDetails(json);
+      api.getEventByGuestKey(id)
+        .then((data) => setEventDetails(data.data))
+        .catch((e) => {
+          console.error(e);
+        });
     })();
   }, []);
 
   useEffect(() => {
-      if (eventDetails?.data) {
-          let thisMeeting = {
-              "id": eventDetails.data.guest_key,
-              "name": eventDetails.data.name,
-              "location": eventDetails.data.location
-          }
-          let arr = JSON.parse(localStorage.getItem("myMeetings"))
-          if (arr === null) {
-              localStorage.setItem("myMeetings", JSON.stringify({"meetingsList": [thisMeeting]}));
-          } else {
-              arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== eventDetails.data.guest_key)
-              arr['meetingsList'].push(thisMeeting)
-              localStorage.setItem("myMeetings", JSON.stringify({"meetingsList": arr['meetingsList']}));
-          }
-          console.log(localStorage.getItem("myMeetings"))
+    if (eventDetails) {
+      let thisMeeting = {
+        "id": eventDetails.guest_key,
+        "name": eventDetails.name,
+        "location": eventDetails.location
       }
+      let arr = JSON.parse(localStorage.getItem("myMeetings"))
+      if (arr === null) {
+        localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": [thisMeeting] }));
+      } else {
+        arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== eventDetails.guest_key)
+        arr['meetingsList'].push(thisMeeting)
+        localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": arr['meetingsList'] }));
+      }
+      console.log(localStorage.getItem("myMeetings"))
+    }
   }, [eventDetails])
 
-  if (!eventDetails?.data) {
-      return (
-          <ErrorBox code={"Couldn't find meeting " + guestId}/>
-      )
+  if (!eventDetails) {
+    return (
+      <ErrorBox code={"Couldn't find meeting " + id} />
+    )
   };
 
   return (
     <div className={` ${style.view}`}>
-    <div className="container">
-    <div className={` ${style.eventDetails}`}>
-        <h3>
-          {eventDetails.data.name}
-        </h3>
-        <h4>
-          {eventDetails.data.location}
-        </h4>
-    </div>
-
-      <div className={`row`}>
-        <div className={`col`} style={{display: "flex"}}>
-          <div className="container">
-            <div className="row">
-              <h3 className="is-center">
-                Select your availability
-              </h3>
-            </div>
-            <div className="row is-center">
-              <Schedule
-                dates={eventDetails.data.options.type === "day" ?
-                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-                }
-                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
-              />
-            </div>
-          </div>
+      <div className="container">
+        <div className={` ${style.eventDetails}`}>
+          <h3>
+            {eventDetails.name}
+          </h3>
+          <h4>
+            {eventDetails.location}
+          </h4>
         </div>
 
-        <div className={`col`} style={{height: "100%"}}>
-          <div className="container">
-            <div className="row">
-              <h3 className="is-center">
-                Group availability
+        <div className={`row`}>
+          <div className={`col`} style={{ display: "flex" }}>
+            <div className="container">
+              <div className="row">
+                <h3 className="is-center">
+                  Select your availability
               </h3>
+              </div>
+              <div className="row is-center">
+                <Schedule
+                  dates={eventDetails.options.type === "day" ?
+                    constructDays(eventDetails.options.days) : eventDetails.options.dates
+                  }
+                  times={constructTimes(eventDetails.options.minTime, eventDetails.options.maxTime)}
+                />
+              </div>
             </div>
-            <div className="row is-center">
-              <Schedule
-                dates={eventDetails.data.options.type === "day" ?
-                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-                }
-                times={constructTimes(eventDetails.data.options.minTime, eventDetails.data.options.maxTime)}
-              />
+          </div>
+
+          <div className={`col`} style={{ height: "100%" }}>
+            <div className="container">
+              <div className="row">
+                <h3 className="is-center">
+                  Group availability
+              </h3>
+              </div>
+              <div className="row is-center">
+                <Schedule
+                  dates={eventDetails.options.type === "day" ?
+                    constructDays(eventDetails.options.days) : eventDetails.options.dates
+                  }
+                  times={constructTimes(eventDetails.options.minTime, eventDetails.options.maxTime)}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }
@@ -129,4 +131,4 @@ function constructTimes(minTime: number, maxTime: number) {
   return times.slice(minTime);
 }
 
-export default GuestPage;
+export default withRouter(GuestPage);
