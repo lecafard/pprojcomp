@@ -76,7 +76,7 @@ function SubmitSchedule({dates=["Monday"], times, timeHandler}: SubmitSchedulePr
 
 function getSelectedCells(grid) {
   const selectedGrid = []
-  for (let i = 0; i < grid[0].length; i++) selectedGrid.push([]);
+  for (let i = 0; i < grid[0].length; i++) selectedGrid.push(new Array(grid.length).fill(0));
 
   for (let row of grid) {
     for (let cell of row) {
