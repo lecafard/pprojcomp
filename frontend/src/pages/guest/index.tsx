@@ -4,18 +4,21 @@ import dayjs from 'dayjs';
 import Schedule from '../../components/schedule';
 
 import style from "./style.module.css";
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import api from '../../api';
 
-const path = window.location.pathname.split('/');
-const guestId = path[path.length - 1];
 
-function GuestPage() {
+function GuestPage({match}: RouteComponentProps<{id: string}>) {
   const [eventDetails, setEventDetails] = useState({} as any);
+  const guestId = match.params.id;
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/guest/${guestId}`);
-      const json = await res.json();
-      setEventDetails(json);
+      api.getEventByGuestKey(guestId)
+        .then((data) => setEventDetails(data.data))
+        .catch((e) => {
+          console.error(e);
+        });
     })();
   }, []);
 
@@ -98,4 +101,4 @@ function constructTimes(minTime: number, maxTime: number) {
   return times.slice(minTime);
 }
 
-export default GuestPage;
+export default withRouter(GuestPage);

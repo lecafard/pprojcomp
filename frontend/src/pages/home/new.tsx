@@ -4,8 +4,9 @@ import { DAYS, DAY_SECONDS, SLOT_LENGTH } from "../../constants";
 import api from "../../api";
 import { Meeting } from "../../api/schemas";
 import dayjs from "dayjs";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
-function New() {
+function New({history}: RouteComponentProps) {
     const { handleSubmit, register, watch, errors } = useForm();
     const onSubmit = (values: any) => {
         const meeting: Meeting = {
@@ -23,7 +24,13 @@ function New() {
         if (meeting.options.type === "day") {
             meeting.options.days = values.options.days.map((v) => v ? "1" : 0).join("");
         }
-        api.newMeeting(meeting);
+        api.newMeeting(meeting)
+            .then((data) => {
+                history.push(`/s/${data.data.owner_key}`);
+            })
+            .catch((e) => {
+                console.error(e);
+            });
     };
     
     const type = watch("options[type]");
@@ -56,60 +63,7 @@ function New() {
                 required
             />
         </p>
-        <div className="grouped">
-            <label>Type:</label>
-            <ul style={{listStyleType: "none"}}>
-                <li>
-                    <input
-                        name="options[type]"
-                        type="radio"
-                        value="day"
-                        ref={register}
-                        required
-                    />
-                    <label>Days of the week</label>
-                </li>
-                <li>
-                    <input
-                        name="options[type]"
-                        type="radio"
-                        value="date"
-                        ref={register}
-                        required
-                    />
-                    <label>Certain dates</label>
-                </li>
-            </ul>
-        </div>
-        { type === "day" ? (<div>
-            {DAYS.map((day, i) => (<span key={i}>
-                <label>{day.substr(0,3)}</label>
-                <input type="checkbox" ref={register()} name={`options[days][${i}]`} />
-            </span>))}
-        </div>) : null }
-        { type === "date" ? "date" : null }
-        <p>
-            <label>
-                <input
-                    name="private"
-                    type="checkbox"
-                    value="day"
-                    ref={register()}
-                />
-                Private
-            </label><br />
-
-            <label>
-            <input
-                    name="allowRegistration"
-                    type="checkbox"
-                    value="day"
-                    ref={register()}
-                />
-                Allow Registration
-            </label>
-        </p>
-
+        
         <label>Time from:</label>
         <select name="options[minTime]" ref={register()}>
             {Array.from(Array((DAY_SECONDS/SLOT_LENGTH)).keys()).map((v) => {
@@ -137,8 +91,64 @@ function New() {
             })}
         </select>
 
+        <div className="grouped">
+            <label>Type:</label>
+            <ul style={{listStyleType: "none"}}>
+                <li>
+                    <input
+                        name="options[type]"
+                        type="radio"
+                        value="day"
+                        ref={register}
+                        required
+                    />
+                    <label>Days of the week</label>
+                </li>
+                <li>
+                    <input
+                        name="options[type]"
+                        type="radio"
+                        value="date"
+                        ref={register}
+                        required
+                    />
+                    <label>Certain dates</label>
+                </li>
+            </ul>
+        </div>
+
+        { type === "day" ? (<div>
+            {DAYS.map((day, i) => (<span key={i}>
+                <label>{day.substr(0,3)}</label>
+                <input type="checkbox" ref={register()} name={`options[days][${i}]`} />
+            </span>))}
+        </div>) : null }
+        { type === "date" ? "date" : null }
+
+        <p>
+            <label>
+                <input
+                    name="private"
+                    type="checkbox"
+                    value="day"
+                    ref={register()}
+                />
+                Private
+            </label><br />
+
+            <label>
+            <input
+                    name="allowRegistration"
+                    type="checkbox"
+                    value="day"
+                    ref={register()}
+                />
+                Allow Registration
+            </label>
+        </p>
+
         <button type="submit">Create!</button>
     </form></>);
 }
 
-export default New;
+export default withRouter(New);

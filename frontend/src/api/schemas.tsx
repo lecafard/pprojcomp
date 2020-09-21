@@ -17,3 +17,9 @@ export interface MeetingOptions {
     min_time: number;
     max_time: number;
 }
+
+export interface APIResponse<T> {
+    success: boolean;
+    error?: any;
+    data: T;
+}

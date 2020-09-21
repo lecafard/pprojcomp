@@ -36,6 +36,9 @@ def new_schedule():
     options = request.json["options"]
     if options["min_time"] >= options["max_time"]:
         return jsonify(success=False, error="min_time is greater than max_time"), 400
+    if options["type"] == "days":
+        if options["days"].count("1") == 0:
+            return jsonify(success=False, error="at least one day must be selected"), 400
     if options["type"] == "dates":
         try:
             options["dates"] = list(set(options["dates"]))
