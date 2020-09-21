@@ -29,19 +29,14 @@ function SubmitSchedule({dates=["Monday"], times, timeHandler,  clearDates}: Sub
     const startCol = Math.min(c1, c2);
     const endCol = Math.max(c1, c2);
 
-    for (let row of grid) {
-      for (let cell of row) {
-        const row = cell.props["data-row"];
-        const col = cell.props["data-col"];
-        if (row && row >= startRow && col >= startCol 
-            && row <= endRow && col <= endCol) {
-          if (!startState) 
-            document.querySelector(`[data-col='${col}'][data-row='${row}']`)
-                    .classList.add(styles.selected);
-          else 
-            document.querySelector(`[data-col='${col}'][data-row='${row}']`)
-                    .classList.remove(styles.selected);
-        }
+    for (let i = startCol; i <= endCol; i++) {
+      for (let j = startRow; j <= endRow; j++) {
+        if (!startState) 
+          document.querySelector(`[data-col='${i}'][data-row='${j}']`)
+                  ?.classList.add(styles.selected);
+        else 
+          document.querySelector(`[data-col='${i}'][data-row='${j}']`)
+                  ?.classList.remove(styles.selected);
       }
     }
   }, [clickEnd]);
