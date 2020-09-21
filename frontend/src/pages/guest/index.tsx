@@ -24,56 +24,56 @@ function GuestPage() {
 
   return (
     <div className={` ${style.view}`}>
-    <div className="container">
-    <div className={` ${style.eventDetails}`}>
-        <h3>
-          {eventDetails.data.name}
-        </h3>
-        <h4>
-          {eventDetails.data.location}
-        </h4>
-    </div>
-
-      <div className={`row`}>
-        <div className={`col`} style={{display: "flex"}}>
-          <div className="container">
-            <div className="row">
-              <h3 className="is-center">
-                Select your availability
-              </h3>
-            </div>
-            <div className="row is-center">
-              <SubmitSchedule
-                dates={eventDetails.data.options.type === "day" ?
-                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-                }
-                times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
-                timeHandler={setUserSelectedTimes}
-              />
-            </div>
-          </div>
+      <div className="container">
+        <div className={` ${style.eventDetails}`}>
+            <h3>
+              {eventDetails.data.name}
+            </h3>
+            <h4>
+              {eventDetails.data.location}
+            </h4>
         </div>
 
-        <div className={`col`} style={{height: "100%"}}>
-          <div className="container">
-            <div className="row">
-              <h3 className="is-center">
-                Group availability
-              </h3>
+        <div className={`row`}>
+          <div className={`col`} style={{display: "flex"}}>
+            <div className="container">
+              <div className="row">
+                <h3 className="is-center">
+                  Select your availability
+                </h3>
+              </div>
+              <div className="row is-center">
+                <SubmitSchedule
+                  dates={eventDetails.data.options.type === "day" ?
+                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                  }
+                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  timeHandler={setUserSelectedTimes}
+                />
+              </div>
             </div>
-            <div className="row is-center">
-              <ReadOnlySchedule
-                dates={eventDetails.data.options.type === "day" ?
-                        constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
-                }
-                times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
-                userSelectedTimes={userSelectedTimes}
-              />
+          </div>
+
+          <div className={`col`} style={{height: "100%"}}>
+            <div className="container">
+              <div className="row">
+                <h3 className="is-center">
+                  Group availability
+                </h3>
+              </div>
+              <div className="row is-center">
+                <ReadOnlySchedule
+                  dates={eventDetails.data.options.type === "day" ?
+                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                  }
+                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  userSelectedTimes={userSelectedTimes}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }
@@ -101,6 +101,19 @@ function constructTimes(minTime: number, maxTime: number) {
   return times.slice(minTime);
 }
 
+function createDateString(selectedDays: Array<any>) {
+  const days = selectedDays[0].length;
+  const times = selectedDays.length;
 
+  let dateString = "";
+
+  for (let day = 1; day < days; day++) {
+    for (let time = 1; time < times; time++) {
+      dateString += selectedDays[time][day];
+    }
+  }
+
+  return dateString;
+}
 
 export default GuestPage;
