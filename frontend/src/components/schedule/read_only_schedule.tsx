@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import constructScheduleGrid from "./base_schedule";
 
 import styles from "./style.module.css";
-import { ifError } from 'assert';
 
 interface ReadOnlyScheduleProps {
   dates?: Array<string>;

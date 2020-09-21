@@ -10,9 +10,10 @@ interface SubmitScheduleProps {
   dates?: Array<string>;
   times: dayjs.Dayjs[];
   timeHandler: any;
+  clearDates: boolean;
 }
 
-function SubmitSchedule({dates=["Monday"], times, timeHandler}: SubmitScheduleProps) {
+function SubmitSchedule({dates=["Monday"], times, timeHandler,  clearDates}: SubmitScheduleProps) {
   const [mouseDown, setMouseDown] = useState(false);
   const [startState, setStartState] = useState(false);
   const [clickStart, setClickStart] = useState([null, null]);
@@ -44,6 +45,11 @@ function SubmitSchedule({dates=["Monday"], times, timeHandler}: SubmitSchedulePr
       }
     }
   }, [clickEnd]);
+
+  useEffect(() => { 
+    clearAllCells(grid);
+    timeHandler(getSelectedCells(grid));
+  }, [clearDates]);
 
   return (
     <div className={`${styles.schedule} ${styles.unselectable}`} 
@@ -93,5 +99,15 @@ function getSelectedCells(grid) {
   return selectedGrid;
 }
 
+function clearAllCells(grid) {
+  for (let row of grid) {
+    for (let cell of row) {
+      const row = cell.props["data-row"];
+      const col = cell.props["data-col"];
+      document.querySelector(`[data-col='${col}'][data-row='${row}']`)
+              ?.classList.remove(styles.selected);
+    }
+  }
+}
 
 export default SubmitSchedule;

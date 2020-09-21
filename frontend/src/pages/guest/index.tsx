@@ -11,6 +11,7 @@ const guestId = path[path.length - 1];
 function GuestPage() {
   const [eventDetails, setEventDetails] = useState({} as any);
   const [userSelectedTimes, setUserSelectedTimes] = useState(null);
+  const [clearTimes, setClearTimes] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -49,7 +50,12 @@ function GuestPage() {
                   }
                   times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
                   timeHandler={setUserSelectedTimes}
+                  clearDates={clearTimes}
                 />
+              </div>
+              <div className="row is-right" style={{marginTop: "20px"}}>
+                <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
+                <button className="button bg-success text-white">Submit</button>
               </div>
             </div>
           </div>
