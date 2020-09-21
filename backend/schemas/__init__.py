@@ -1,32 +1,6 @@
 # use 15 minute increments instead of 86400 seconds
 # data objects used for validation
 
-entry = {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Schedule entries.",
-  "type": "object",
-  "properties": {
-    "from": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 1344
-    },
-    "to": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 1344
-    },
-    "state": {
-      "type": "boolean"
-    }
-  },
-  "required": [
-    "from",
-    "to",
-    "state"
-  ]
-}
-
 auth = {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "properties": {
@@ -68,7 +42,12 @@ guest_entry = {
   "type": "object",
   "properties": {
     "auth": auth,
-    "entry": entry
+    "entry": {
+      "type": "string",
+      "pattern": "[01]+",
+      "minLength": 1,
+      "maxLength": 1344
+    }
   },
   "required": ["auth", "entry"]
 }
