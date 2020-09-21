@@ -30,6 +30,8 @@ function New({ history }: RouteComponentProps) {
       meeting.options.days = days
         .map((v) => (v ? "1" : 0))
         .join("");
+    } else {
+      meeting.options.dates = dates;
     }
 
     api
@@ -39,6 +41,7 @@ function New({ history }: RouteComponentProps) {
       })
       .catch((e) => {
         console.error(e);
+        alert("error");
       });
   };
 
@@ -201,7 +204,7 @@ function New({ history }: RouteComponentProps) {
             <input
               name="private"
               type="checkbox"
-              value="day"
+              value="1"
               ref={register()}
             />
             Private
@@ -212,7 +215,7 @@ function New({ history }: RouteComponentProps) {
             <input
               name="allowRegistration"
               type="checkbox"
-              value="day"
+              value="1"
               ref={register()}
             />
             Allow Registration
