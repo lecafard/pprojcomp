@@ -1,4 +1,5 @@
 import React from 'react';
+import {DAYS} from "../../constants";
 
 import dayjs from 'dayjs';
 import weekday from "dayjs/plugin/weekday";
@@ -6,8 +7,6 @@ import weekday from "dayjs/plugin/weekday";
 import styles from "./style.module.css";
 
 dayjs.extend(weekday);
-
-const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function constructScheduleGrid(dates: Array<string>, times: dayjs.Dayjs[]) {
   const grid = Array.from(Array(dates.length + 1));
@@ -27,7 +26,7 @@ function constructScheduleGrid(dates: Array<string>, times: dayjs.Dayjs[]) {
         if (j === 0) {
           grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
                          <div className={`${styles.date}`}>{dayjs(dates[i - 1]).format("MMM DD")}</div>
-                         <div className={`${styles.weekday}`}>{daysOfWeek[dayjs(dates[i - 1]).weekday()]}</div>
+                         <div className={`${styles.weekday}`}>{DAYS[dayjs(dates[i - 1]).weekday()]}</div>
                        </label>
           );
         } else {

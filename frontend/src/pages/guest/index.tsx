@@ -6,6 +6,7 @@ import { ReadOnlySchedule, SubmitSchedule } from '../../components/schedule';
 import style from "./style.module.css";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import api from '../../api';
+import { DAYS } from '../../constants';
 
 function ErrorBox(props: any) {
   return (
@@ -117,17 +118,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
 }
 
 function constructDays(days: Array<string>) {
-  const weekDays = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-
-  return weekDays.filter((_, i) => days[i] === "1");
+  return DAYS.filter((_, i) => days[i] === "1");
 }
 
 function constructTimes(minTime: number, maxTime: number) {
@@ -154,4 +145,4 @@ function createDateString(selectedDays: Array<any>) {
   return dateString;
 }
 
-export default GuestPage;
+export default withRouter(GuestPage);
