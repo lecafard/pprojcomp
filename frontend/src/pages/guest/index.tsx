@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
-import Schedule from '../../components/schedule';
+import { ReadOnlySchedule, SubmitSchedule } from '../../components/schedule';
 
 import style from "./style.module.css";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import api from '../../api';
+import { DAYS } from '../../constants';
 
 function ErrorBox(props: any) {
   return (
@@ -15,9 +16,10 @@ function ErrorBox(props: any) {
   )
 }
 
-
-function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id: string }>) {
-  const [eventDetails, setEventDetails] = useState(null);
+function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
+  const [eventDetails, setEventDetails] = useState({} as any);
+  const [userSelectedTimes, setUserSelectedTimes] = useState(null);
+  const [clearTimes, setClearTimes] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -72,32 +74,39 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id: stri
               <div className="row">
                 <h3 className="is-center">
                   Select your availability
-              </h3>
+                </h3>
               </div>
               <div className="row is-center">
-                <Schedule
-                  dates={eventDetails.options.type === "day" ?
-                    constructDays(eventDetails.options.days) : eventDetails.options.dates
+                <SubmitSchedule
+                  dates={eventDetails.data.options.type === "day" ?
+                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                   }
-                  times={constructTimes(eventDetails.options.minTime, eventDetails.options.maxTime)}
+                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  timeHandler={setUserSelectedTimes}
+                  clearDates={clearTimes}
                 />
+              </div>
+              <div className="row is-right" style={{marginTop: "20px"}}>
+                <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
+                <button className="button bg-success text-white">Submit</button>
               </div>
             </div>
           </div>
 
-          <div className={`col`} style={{ height: "100%" }}>
+          <div className={`col`} style={{height: "100%"}}>
             <div className="container">
               <div className="row">
                 <h3 className="is-center">
                   Group availability
-              </h3>
+                </h3>
               </div>
               <div className="row is-center">
-                <Schedule
-                  dates={eventDetails.options.type === "day" ?
-                    constructDays(eventDetails.options.days) : eventDetails.options.dates
+                <ReadOnlySchedule
+                  dates={eventDetails.data.options.type === "day" ?
+                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
                   }
-                  times={constructTimes(eventDetails.options.minTime, eventDetails.options.maxTime)}
+                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  userSelectedTimes={userSelectedTimes}
                 />
               </div>
             </div>
@@ -109,26 +118,31 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id: stri
 }
 
 function constructDays(days: Array<string>) {
-  const weekDays = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-
-  return weekDays.filter((_, i) => days[i] === "1");
+  return DAYS.filter((_, i) => days[i] === "1");
 }
 
 function constructTimes(minTime: number, maxTime: number) {
   const times = [dayjs().hour(0).minute(0)];
   for (let i = 1; i < maxTime; i++) {
-    times.push(times[i - 1].add(15, "minute"));
+    times.push(times[i - 1].add(30, "minute"));
   }
 
   return times.slice(minTime);
+}
+
+function createDateString(selectedDays: Array<any>) {
+  const days = selectedDays[0].length;
+  const times = selectedDays.length;
+
+  let dateString = "";
+
+  for (let day = 1; day < days; day++) {
+    for (let time = 1; time < times; time++) {
+      dateString += selectedDays[time][day];
+    }
+  }
+
+  return dateString;
 }
 
 export default withRouter(GuestPage);
