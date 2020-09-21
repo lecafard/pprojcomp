@@ -17,7 +17,7 @@
 }
 
 .cell.selected {
-    background-color: var(--bg-theme);
+    background-color: #2370d5;
 }
 
 .unselectable {

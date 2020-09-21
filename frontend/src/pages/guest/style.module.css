@@ -11,3 +11,8 @@
     line-height: 12px;
     margin-top: 30px
 }
+
+.errorBox {
+    color: #fff;
+    text-align: center;
+}
