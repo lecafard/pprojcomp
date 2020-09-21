@@ -4,39 +4,71 @@ import dayjs from 'dayjs';
 import { ReadOnlySchedule, SubmitSchedule } from '../../components/schedule';
 
 import style from "./style.module.css";
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import api from '../../api';
 
-const path = window.location.pathname.split('/');
-const guestId = path[path.length - 1];
+function ErrorBox(props: any) {
+  return (
+    <div className={`container ${style.errorBox}`}>
+      <h3> {props.code} :( </h3>
+    </div>
+  )
+}
 
-function GuestPage() {
+function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState({} as any);
   const [userSelectedTimes, setUserSelectedTimes] = useState(null);
   const [clearTimes, setClearTimes] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const res = await fetch(`/api/guest/${guestId}`);
-      const json = await res.json();
-      setEventDetails(json);
+      api.getEventByGuestKey(id)
+        .then((data) => setEventDetails(data.data))
+        .catch((e) => {
+          console.error(e);
+        });
     })();
   }, []);
 
-  if (!eventDetails?.data) return null;
+  useEffect(() => {
+    if (eventDetails) {
+      let thisMeeting = {
+        "id": eventDetails.guest_key,
+        "name": eventDetails.name,
+        "location": eventDetails.location
+      }
+      let arr = JSON.parse(localStorage.getItem("myMeetings"))
+      if (arr === null) {
+        localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": [thisMeeting] }));
+      } else {
+        arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== eventDetails.guest_key)
+        arr['meetingsList'].push(thisMeeting)
+        localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": arr['meetingsList'] }));
+      }
+      console.log(localStorage.getItem("myMeetings"))
+    }
+  }, [eventDetails])
+
+  if (!eventDetails) {
+    return (
+      <ErrorBox code={"Couldn't find meeting " + id} />
+    )
+  };
 
   return (
     <div className={` ${style.view}`}>
       <div className="container">
         <div className={` ${style.eventDetails}`}>
-            <h3>
-              {eventDetails.data.name}
-            </h3>
-            <h4>
-              {eventDetails.data.location}
-            </h4>
+          <h3>
+            {eventDetails.name}
+          </h3>
+          <h4>
+            {eventDetails.location}
+          </h4>
         </div>
 
         <div className={`row`}>
-          <div className={`col`} style={{display: "flex"}}>
+          <div className={`col`} style={{ display: "flex" }}>
             <div className="container">
               <div className="row">
                 <h3 className="is-center">
