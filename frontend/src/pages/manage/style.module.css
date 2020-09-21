@@ -1,3 +1,35 @@
 .list {
   background-color: var(--bg-color);
 }
+
+.listItem {
+    padding: 15px 40px;
+    font-size: 12px;
+    background-position: center;
+  transition: background 0.8s;
+}
+
+.listItem:hover {
+    /* background-color: #e0e0e0; */
+    cursor: pointer;
+    background: #e0e0e0 radial-gradient(circle, transparent 1%, #e0e0e0 1%) center/15000%;
+}
+
+.listItem:active {
+    background-color: #ededed;
+  background-size: 100%;
+  transition: background 0s;
+}
+
+.listItem .title {
+    font-size: 24px;
+}
+
+.listItem .title2 {
+    font-size: 16px;
+}
+
+.view {
+    background-color: #fff;
+    height: 100%;
+}

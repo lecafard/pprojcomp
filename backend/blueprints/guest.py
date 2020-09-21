@@ -13,6 +13,10 @@ from util import create_user
 
 blueprint = Blueprint('guest', __name__)
 
+def binary_string(b: bytes):
+    s = bitarray()
+    s.frombytes(b)
+    return s.to01()
 
 def login(meeting_id, name, password):
     """
@@ -48,11 +52,19 @@ def post_login(_id):
         json = [JsonSchema(schema=schemas.guest_auth)]
     inputs = Validator(request)
     if not inputs.validate():
-        return jsonify(success=False, errors=inputs.errors)
+        return jsonify(success=False, error=inputs.errors)
 
     res = Meeting.query.filter_by(guest_key=_id).first()
     if res == None:
         abort(404)
+
+    # calculate number of slots
+    if res.options["type"] == "day":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * res.options["days"].count("1")
+    elif res.options["type"] == "date":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * len(res.options["dates"])
+    else:
+        abort(500)
     
     entry = login(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
 
@@ -60,7 +72,7 @@ def post_login(_id):
         return jsonify(
             success=True, 
             data={
-                "schedule": base64.b64encode(entry.availability).decode("ascii"), 
+                "schedule": binary_string(entry.availability)[:n_slots], 
                 "notes": entry.notes
             }
         )
@@ -84,9 +96,17 @@ def get_meeting(_id):
     if res == None:
         abort(404)
 
+    # calculate number of slots
+    if res.options["type"] == "day":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * res.options["days"].count("1")
+    elif res.options["type"] == "date":
+        n_slots = (res.options["max_time"] - res.options["min_time"]) * len(res.options["dates"])
+    else:
+        abort(500)
+
     if not res.private:
         entries = Entry.query.filter_by(meeting_id=res.id).all()
-        schedules = { i.name: base64.b64encode(i.availability).decode("ascii") for i in entries }
+        schedules = { i.name: binary_string(i.availability)[:n_slots] for i in entries }
         notes = { i.name: i.notes for i in entries }
     else:
         schedules = {}
@@ -124,7 +144,7 @@ def update_schedule(_id):
         json = [JsonSchema(schema=schemas.guest_entry)]
     inputs = Validator(request)
     if not inputs.validate():
-        return jsonify(success=False, errors=inputs.errors)
+        return jsonify(success=False, error=inputs.errors)
     
     res = Meeting.query.filter_by(guest_key=_id).first()
     if res == None:
@@ -145,16 +165,10 @@ def update_schedule(_id):
 
     # initialise bitfield to record dates
     data = request.json["entry"]
-    if data["from"] > data["to"] or data["to"] > n_slots:
-        return jsonify(success=False, error="invalid entry"), 400
+    if len(data) != n_slots:
+        jsonify(success=False, error="invalid number of slots")
 
-    if entry.availability == b"":
-        slots = bitarray("0" * n_slots, endian="big")
-    else:
-        slots = bitarray(endian="big")
-        slots.frombytes(entry.availability)
-    
-    slots[data["from"]:data["to"]] = data["state"]
+    slots = bitarray(data, endian="big")
     entry.availability = slots.tobytes()
     db.session.commit()
     
@@ -170,7 +184,7 @@ def update_notes(_id):
         json = [JsonSchema(schema=schemas.guest_notes)]
     inputs = Validator(request)
     if not inputs.validate():
-        return jsonify(success=False, errors=inputs.errors)
+        return jsonify(success=False, error=inputs.errors)
     
     res = Meeting.query.filter_by(guest_key=_id).first()
     if res == None:
