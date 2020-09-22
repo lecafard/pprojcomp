@@ -86,10 +86,23 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   clearDates={clearTimes}
                 />
               </div>
-              <div className="row is-right" style={{marginTop: "20px"}}>
-                <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
-                <button className="button bg-success text-white">Submit</button>
-              </div>
+              <form style={{marginTop: "20px"}}>
+                <fieldset>
+                  <legend>Enter Your Details</legend>                
+                  <p>
+                    <label htmlFor="name_input">Name</label>
+                    <input id="name_input" type="text"/>
+                  </p>
+                  <p>
+                    <label htmlFor="notes_input">Notes</label>
+                    <textarea id="notes_input"/>
+                  </p>
+                  <p className="is-right">
+                    <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
+                    <button className="button bg-success text-white">Submit</button>
+                  </p>
+                </fieldset>
+              </form>
             </div>
           </div>
 
