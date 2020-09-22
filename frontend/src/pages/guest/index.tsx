@@ -69,31 +69,21 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
     })
   }
 
-  if (!eventDetails) {
-    return (
-      <ErrorBox code={"Couldn't find meeting " + id} />
-    )
-  };
+  if (!eventDetails) return <ErrorBox code={"Couldn't find meeting " + id} />;
 
   return (
-    <div className={` ${style.view}`}>
+    <div className={`${style.view}`}>
       <div className="container">
-        <div className={` ${style.eventDetails}`}>
-          <h3>
-            {eventDetails.name}
-          </h3>
-          <h4>
-            {eventDetails.location}
-          </h4>
+        <div className={`${style.eventDetails}`}>
+          <h3>{eventDetails.name}</h3>
+          <h4>{eventDetails.location}</h4>
         </div>
 
         <div className={`row`}>
           <div className={`col`} style={{ display: "flex" }}>
             <div className="container">
               <div className="row">
-                <h3 className="is-center">
-                  Select your availability
-                </h3>
+                <h3 className="is-center">Select your availability</h3>
               </div>
               <div className="row is-center">
                 <SubmitSchedule
@@ -135,9 +125,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
           <div className={`col`} style={{height: "100%"}}>
             <div className="container">
               <div className="row">
-                <h3 className="is-center">
-                  Group availability
-                </h3>
+                <h3 className="is-center">Group availability</h3>
               </div>
               <div className="row is-center">
                 <ReadOnlySchedule
