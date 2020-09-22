@@ -50,6 +50,25 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
     }
   }, [eventDetails])
 
+  async function submitTimes() {
+    const name = "test";
+    const notes = "test";
+
+    const res = await fetch(`/api/guest/${id}/schedule`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "auth": {
+          "name": name,
+          "password": ""
+        },
+        "entry": createDateString(userSelectedTimes)
+      })
+    })
+  }
+
   if (!eventDetails) {
     return (
       <ErrorBox code={"Couldn't find meeting " + id} />
@@ -99,7 +118,14 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   </p>
                   <p className="is-right">
                     <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
-                    <button className="button bg-success text-white">Submit</button>
+                    <button className="button bg-success text-white" 
+                      onClick={e => {
+                               e.preventDefault();
+                               submitTimes();
+                              }}
+                    >
+                      Submit
+                    </button>
                   </p>
                 </fieldset>
               </form>
