@@ -1,38 +1,72 @@
-import React, {useState} from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import api from "../../api";
+import { APIResponse, Meeting } from "../../api/schemas";
 
-function Guest() {
-    const [inputValue, setInputValue] = useState<string>('');
-    const [success, setSuccess] = useState<boolean>(false);
+function Guest({ history }: RouteComponentProps) {
+  const [guestKey, setGuestKey] = useState('');
+  const [ownerKey, setOwnerKey] = useState('');
+  const [error, setError] = useState('');
 
-
-    async function handleChange(e: any) {
-        (async function check (n) {
-            setInputValue(n)
-            let r = await fetch(`/api/guest/${n}`)
-            if (r.status === 200) {
-                setSuccess(true)
-            } else {
-                setSuccess(false)
-                console.log("no meeting with id ", n)
-            }
-        })(e.target.value)
+  function handleChange(fn: React.Dispatch<React.SetStateAction<string>>) {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      setError('');
+      fn(e.target.value);
     }
+  }
 
-    return (<>
-    <h1 className="is-center">Have a Guest Code?</h1>
-    <form>
-        <p>
-            <label>Guest Code</label>
-            <input name="name" onChange={handleChange}/>
-        </p>
+  function checkCode(type: string) {
+    return function (e: React.FormEvent) {
+      e.preventDefault();
+      if (type == 'm') {
+        api.getEventByOwnerKey(ownerKey)
+          .then(() => {
+            history.push(`/m/${ownerKey}`);
+          })
+          .catch(() => {
+            setError("Manager key is not valid");
+          });
+      } else {
+        api.getEventByGuestKey(guestKey)
+          .then(() => {
+            history.push(`/g/${guestKey}`);
+          })
+          .catch(() => {
+            setError("Guest key is not valid");
+          });
+      }
+    }
+  }
 
-        <Link to={success ? `/g/${inputValue}` : '/'}>
-         <button type={success ? "submit" : "button"}>
-              Join!
-         </button>
-       </Link>
-    </form></>);
+  return (<>
+    <h1 className="is-center">Have a Guest or Manager Code?</h1>
+    {error ? (
+      <blockquote style={{
+        backgroundColor: "var(--color-error)"
+      }}>
+        {error}
+      </blockquote>
+    ) : null}
+    <form onSubmit={checkCode('g')}>
+      <p>
+        <label>Guest Code</label>
+        <input name="name" value={guestKey} required onChange={handleChange(setGuestKey)} />
+      </p>
+
+      <button type="submit" className="button is-info">
+        Join!
+            </button>
+    </form>
+    <form onSubmit={checkCode('m')}>
+      <p>
+        <label>Manager Code</label>
+        <input name="name" value={ownerKey} required onChange={handleChange(setOwnerKey)} />
+      </p>
+
+      <button type="submit" className="button is-info">
+        Join!
+        </button>
+    </form>
+  </>);
 }
-
-export default Guest;
+export default withRouter(Guest);

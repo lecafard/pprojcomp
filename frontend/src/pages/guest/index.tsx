@@ -7,6 +7,7 @@ import style from "./style.module.css";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import api from '../../api';
 import { DAYS } from '../../constants';
+import { Meeting } from '../../api/schemas';
 
 function ErrorBox(props: any) {
   return (
@@ -17,7 +18,7 @@ function ErrorBox(props: any) {
 }
 
 function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
-  const [eventDetails, setEventDetails] = useState({} as any);
+  const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
   const [userSelectedTimes, setUserSelectedTimes] = useState(null);
   const [clearTimes, setClearTimes] = useState(false);
 
@@ -78,10 +79,10 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
               </div>
               <div className="row is-center">
                 <SubmitSchedule
-                  dates={eventDetails.data.options.type === "day" ?
-                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                  dates={eventDetails.options.type === "day" ?
+                          constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
-                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
                   timeHandler={setUserSelectedTimes}
                   clearDates={clearTimes}
                 />
@@ -102,10 +103,10 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
               </div>
               <div className="row is-center">
                 <ReadOnlySchedule
-                  dates={eventDetails.data.options.type === "day" ?
-                          constructDays(eventDetails.data.options.dates) : eventDetails.data.options.dates
+                  dates={eventDetails.options.type === "day" ?
+                          constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
-                  times={constructTimes(eventDetails.data.options["min_time"], eventDetails.data.options["max_time"])}
+                  times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
                   userSelectedTimes={userSelectedTimes}
                 />
               </div>
@@ -117,7 +118,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
   );
 }
 
-function constructDays(days: Array<string>) {
+function constructDays(days: string) {
   return DAYS.filter((_, i) => days[i] === "1");
 }
 
