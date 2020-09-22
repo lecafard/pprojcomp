@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 
-import GuestPage from './pages/guest';
-import HomePage from './pages/home';
-import AboutPage from './pages/about';
-import ManageListPage from './pages/manage/list';
-import ManageMeetingPage from './pages/manage/meeting';
-import Navbar from './components/navbar';
+import GuestPage from "./pages/guest";
+import HomePage from "./pages/home";
+import AboutPage from "./pages/about";
+import ManageListPage from "./pages/manage/list";
+import ManageMeetingPage from "./pages/manage/meeting";
+import Navbar from "./components/navbar";
 
 function App() {
   return (
@@ -20,11 +20,11 @@ function App() {
         <Navbar />
         <Switch>
           <Route path="/" exact>
-            <HomePage />  
+            <HomePage />
           </Route>
 
           <Route path="/about">
-            <AboutPage />  
+            <AboutPage />
           </Route>
 
           <Route path="/g/:id">

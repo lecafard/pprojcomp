@@ -18,7 +18,7 @@ function ErrorBox(props: any) {
 }
 
 function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
-  const [eventDetails, setEventDetails] = useState(null as Meeting);
+  const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
   const [userSelectedTimes, setUserSelectedTimes] = useState(null);
   const [clearTimes, setClearTimes] = useState(false);
 
@@ -79,7 +79,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
               <div className="row is-center">
                 <SubmitSchedule
                   dates={eventDetails.options.type === "day" ?
-                          constructDays(eventDetails.options.dates) : eventDetails.options.dates
+                          constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
                   times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
                   timeHandler={setUserSelectedTimes}
@@ -103,7 +103,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
               <div className="row is-center">
                 <ReadOnlySchedule
                   dates={eventDetails.options.type === "day" ?
-                          constructDays(eventDetails.options.dates) : eventDetails.options.dates
+                          constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
                   times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
                   userSelectedTimes={userSelectedTimes}
@@ -117,7 +117,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
   );
 }
 
-function constructDays(days: Array<string>) {
+function constructDays(days: string) {
   return DAYS.filter((_, i) => days[i] === "1");
 }
 

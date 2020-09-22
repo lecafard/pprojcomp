@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
 function ManageMeetingPage() {
-    return (<div>New</div>);
+  return <div>New</div>;
 }
 
 export default ManageMeetingPage;
