@@ -33,7 +33,7 @@ function ReadOnlyScheduleProps({dates=["Monday"], times, userSelectedTimes}: Rea
     <div className={`read-only-schedule ${styles.schedule} ${styles.unselectable}`} 
       style={{gridTemplateColumns: `repeat(${dates.length + 1}, 1fr)`,
               gridTemplateRows: `repeat(${times.length + 1}, 1fr)`,
-              maxHeight: "50vh"}}
+              maxHeight: "30vh"}}
     >
       {grid.map(row => {
         return row.map(col => col);

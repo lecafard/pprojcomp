@@ -16,7 +16,7 @@ function constructScheduleGrid(dates: Array<string>, times: dayjs.Dayjs[]) {
     if (i === 0) {
       grid[0][0] = <div/>;
       for (let j = 1; j < times.length + 1; j++) {
-        grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
+        grid[i].push(<label className={`${styles.unselectable} ${styles.side_label}`} data-col={i} data-row={j}>
                        {times[j - 1].format("hh:mm a")}
                      </label>
         );

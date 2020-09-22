@@ -50,7 +50,7 @@ function SubmitSchedule({dates=["Monday"], times, timeHandler,  clearDates}: Sub
     <div className={`${styles.schedule} ${styles.unselectable}`} 
       style={{gridTemplateColumns: `repeat(${dates.length + 1}, 1fr)`,
               gridTemplateRows: `repeat(${times.length + 1}, 1fr)`,
-              maxHeight: "50vh"}}
+              maxHeight: "30vh"}}
       onMouseDown={e => {
         setMouseDown(true);
         const cell = e.target as HTMLDivElement;
