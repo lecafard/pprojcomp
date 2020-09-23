@@ -31,7 +31,7 @@ function App() {
             <GuestPage />
           </Route>
 
-          <Route path="/s">
+          <Route path="/s" exact>
             <ManageListPage />
           </Route>
 

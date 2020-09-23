@@ -5,6 +5,7 @@ import api from "../../api";
 import { Meeting } from "../../api/schemas";
 import dayjs from "dayjs";
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import style from "./style.module.css";
 
 function New({ history }: RouteComponentProps) {
   const [currentDate, _] = useState(dayjs());
@@ -37,7 +38,7 @@ function New({ history }: RouteComponentProps) {
     api
       .newMeeting(meeting)
       .then((data) => {
-        history.push(`/s/${data.data.owner_key}`);
+        history.push(`/m/${data.data.owner_key}`);
       })
       .catch((e) => {
         console.error(e);
@@ -139,6 +140,7 @@ function New({ history }: RouteComponentProps) {
               >
                 <label
                   style={{ backgroundColor: days[i] ? "green" : "red" }}
+                  className={style.item}
                   onMouseDown={() => {
                     setDays(days.map((d, j) => (i === j ? !days[i] : d)));
                     setMouseDown(!days[i]);
@@ -161,15 +163,13 @@ function New({ history }: RouteComponentProps) {
                 {new Array(7).fill(0).map((_, day) => (
                   <span key={day}>
                     <div
+                      className={style.item}
                       style={{
                         backgroundColor: dates
                           .indexOf(currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD")) 
                           !== -1 
                           ? 'green'
-                          : 'red',
-                        width: '60px',
-                        margin: '2px',
-                        display: 'inline-block'
+                          : 'red'
                       }}
                       onMouseDown={() => {
                         const date = currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD");

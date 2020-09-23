@@ -5,3 +5,9 @@
 .col {
   padding: 15px;
 }
+
+.item {
+  width: 60px;
+  margin: 2px;
+  display: inline-block;
+}
