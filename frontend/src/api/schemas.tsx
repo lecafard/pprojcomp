@@ -5,6 +5,8 @@ export interface Meeting {
   allow_registration: boolean;
   guest_key?: string;
   owner_key?: string;
+  schedules?: {[key: string]: string};
+  notes?: {[key: string]: string};
   options: MeetingOptions;
 }
 

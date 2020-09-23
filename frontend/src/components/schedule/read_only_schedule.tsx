@@ -7,39 +7,14 @@ import constructScheduleGrid from "./base_schedule";
 import styles from "./style.module.css";
 
 interface ReadOnlyScheduleProps {
-  dates?: Array<string>;
+  dates?: string[];
   times: dayjs.Dayjs[];
-  userSelectedTimes?: Array<any>;
+  userSelectedTimes?: any;
 }
 
-function ReadOnlyScheduleProps({dates=["Monday"], times, userSelectedTimes}: ReadOnlyScheduleProps) {
-  const grid = constructScheduleGrid(dates, times);
-
-  useEffect(() => {
-    if (!userSelectedTimes) return;
-
-    for (let col = 0; col < dates.length + 1; col++) {
-      for (let row = 0; row < times.length + 1; row++) {
-        const elem = document.getElementsByClassName("read-only-schedule")[0]
-                             .querySelector(`[data-col='${col}'][data-row='${row}']`);
-        if (!elem) continue;
-        else if (userSelectedTimes[row][col]) elem.classList.add(styles.selected);
-        else elem.classList.remove(styles.selected);
-      }
-    }
-  }, [userSelectedTimes]);
-
-  return (
-    <div className={`read-only-schedule ${styles.schedule} ${styles.unselectable}`} 
-      style={{gridTemplateColumns: `repeat(${dates.length + 1}, 1fr)`,
-              gridTemplateRows: `repeat(${times.length + 1}, 1fr)`,
-              maxHeight: "50vh"}}
-    >
-      {grid.map(row => {
-        return row.map(col => col);
-      })}
-    </div>
-  );
+function ReadOnlySchedule({dates=["Monday"], times, userSelectedTimes}: ReadOnlyScheduleProps) {
+  console.log(userSelectedTimes);
+  return constructScheduleGrid(dates, times.map(t => t.format("HH:MM")), userSelectedTimes);
 }
 
-export default ReadOnlyScheduleProps;
+export default ReadOnlySchedule;

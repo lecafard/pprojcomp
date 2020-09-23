@@ -47,7 +47,6 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
         arr['meetingsList'].push(thisMeeting)
         localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": arr['meetingsList'] }));
       }
-      console.log(localStorage.getItem("myMeetings"))
     }
   }, [eventDetails])
 
@@ -107,7 +106,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                           constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
                   times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
-                  userSelectedTimes={userSelectedTimes}
+                  userSelectedTimes={eventDetails.schedules || {}}
                 />
               </div>
             </div>

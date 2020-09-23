@@ -1,42 +1,143 @@
-import React from 'react';
-import {DAYS} from "../../constants";
-
-import dayjs from 'dayjs';
-import weekday from "dayjs/plugin/weekday";
-
+import React, { useState, useEffect } from 'react';
 import styles from "./style.module.css";
 
-dayjs.extend(weekday);
+function mapRows(i: number) {
+  return (s: string) => (s[i]);
+}
 
-function constructScheduleGrid(dates: Array<string>, times: dayjs.Dayjs[]) {
-  const grid = Array.from(Array(dates.length + 1));
+function sum(total: number, num: string) {
+  return total + ((num === '1') ? 1 : 0);
+}
 
-  for (let i = 0; i < dates.length + 1; i++) {
-    grid[i] = [];
-    if (i === 0) {
-      grid[0][0] = <div/>;
-      for (let j = 1; j < times.length + 1; j++) {
-        grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
-                       {times[j - 1].format("hh:mm a")}
-                     </label>
-        );
-      }
-    } else {
-      for (let j = 0; j < times.length + 1; j++) {
-        if (j === 0) {
-          grid[i].push(<label className={`${styles.unselectable} ${styles.label}`} data-col={i} data-row={j}>
-                         <div className={`${styles.date}`}>{dayjs(dates[i - 1]).format("MMM DD")}</div>
-                         <div className={`${styles.weekday}`}>{DAYS[dayjs(dates[i - 1]).weekday()]}</div>
-                       </label>
-          );
-        } else {
-          grid[i].push(<div data-col={i} data-row={j} className={styles.cell}/>);
-        }
+function min(a: number, b: number) {
+  return (a < b) ? a : b;
+}
+
+function max(a: number, b: number) {
+  return (a > b) ? a : b;
+}
+
+function ScheduleGrid(days: string[],
+  slots: string[],
+  schedules: { [key: string]: string },
+  current = "",
+  setAvailability?: (string) => void) {
+
+  const [mouseDown, setMouseDown] = useState<boolean | null>(null);
+  const [mouseStart, setMouseStart] = useState([0, 0]);
+  const [me, setMe] = useState(current);
+
+  useEffect(() => {
+    setMe(current);
+  }, [current]);
+
+  const names = Object.keys(schedules);
+  const items = names.map((name) => schedules[name]);
+
+  const handleDown = (col: number, row: number) => {
+    if (!setAvailability) return null;
+
+    return () => {
+      setMouseStart([col, row]);
+      if (me[col * slots.length + row] === "1") {
+        setMouseDown(false);
+      } else {
+        setMouseDown(true);
       }
     }
   }
 
-  return grid;
+  const handleUp = (col: number, row: number) => {
+    return () => {
+      if (mouseDown === null) return;
+      setMouseDown(null);
+      if (!setAvailability) return;
+
+      // Calculate what to fill
+      let out = new Array(days.length * slots.length).fill(0);
+      for (let i = 0; i < me.length; i++) {
+        out[i] = (me[i] === "1") ? 1 : 0;
+      }
+
+      const minCol = min(col, mouseStart[0]);
+      const maxCol = max(col, mouseStart[0]);
+      const minRow = min(row, mouseStart[1]);
+      const maxRow = max(row, mouseStart[1]);
+
+      for (let i = minCol; i <= maxCol; i++) {
+        for (let j = minRow; j <= maxRow; j++) {
+          out[i * slots.length + j] = (mouseDown ? 1 : 0);
+        }
+      }
+
+      setAvailability(out.join(""));
+    }
+  }
+
+  const handleHover = (col: number, row: number) => {
+    if (!setAvailability) return;
+
+    return () => {
+      if (mouseDown === null) return;
+      // Calculate what to fill
+      let out = new Array(days.length * slots.length).fill(0);
+      for (let i = 0; i < me.length; i++) {
+        out[i] = (me[i] === "1") ? 1 : 0;
+      }
+
+      const minCol = min(col, mouseStart[0]);
+      const maxCol = max(col, mouseStart[0]);
+      const minRow = min(row, mouseStart[1]);
+      const maxRow = max(row, mouseStart[1]);
+
+      for (let i = minCol; i <= maxCol; i++) {
+        for (let j = minRow; j <= maxRow; j++) {
+          out[i * slots.length + j] = (mouseDown ? 1 : 0);
+        }
+      }
+
+      setMe(out.join(""));
+    }
+  }
+
+  const handleLeave = () => {
+    setMouseDown(null);
+    if (!setAvailability) return null;
+    setMe(current);
+  }
+
+
+
+  return (<div className={`read-only-schedule ${styles.schedule} ${styles.unselectable}`}
+    style={{
+      gridTemplateColumns: `repeat(${days.length + 1}, 1fr)`,
+      gridTemplateRows: `repeat(${slots.length + 1}, 1fr)`,
+      maxHeight: "50vh"
+    }}
+    onMouseLeave={handleLeave}
+  >
+    {[
+      [(<div key={"b"} />)],
+      slots.map((slot, i) => (
+        <label className={`${styles.unselectable} ${styles.label}`} data-col={0} data-row={i} key={`t${i}`}>
+          {slot}
+        </label>
+      )),
+      days.map((day, i) => ([
+        <label className={`${styles.unselectable} ${styles.label}`} data-col={i + 1} data-row={0} key={`d${i}`}>
+          {day}
+        </label>
+      ].concat(slots.map((_, j) => (
+        <div
+          onMouseDown={handleDown(i, j)}
+          onMouseUp={handleUp(i, j)}
+          onMouseOver={handleHover(i, j)}
+          className={`${styles.cell}`} style={{
+            backgroundColor: me ? (me[i * slots.length + j] === '1' ? `rgb(0, 110, 255)` : 'white')
+              : `rgba(0, 110, 255, ${items.map(mapRows(i * slots.length + j)).reduce(sum, 0) / items.length})`
+          }} key={`d${i}t${j}`} />
+      )))))
+    ].flat()}</div>);
 }
 
-export default constructScheduleGrid;
+export default ScheduleGrid;
