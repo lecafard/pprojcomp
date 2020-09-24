@@ -133,6 +133,9 @@ def post_create_user(_id):
     res = Meeting.query.filter_by(owner_key=_id).first()
     if res == None:
         abort(404)
+
+    if request.json["name"] == "(me)":
+        return jsonify(success=False, error="name not allowed"), 400
     
     entry = Entry.query.filter_by(meeting_id=res.id, name=request.json["name"]).first()
     if entry:

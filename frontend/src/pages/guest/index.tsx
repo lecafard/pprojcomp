@@ -77,9 +77,10 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                 </h3>
               </div>
               <div className="row is-center">
-              <Schedule
+                <Schedule
                   days={eventDetails.options.type === "day" ?
-                          constructDays(eventDetails.options.days) : eventDetails.options.dates
+                    constructDays(eventDetails.options.days) :
+                    eventDetails.options.dates.map((d) => dayjs(d).format("DD MMM YY"))
                   }
                   slots={constructTimes(
                     eventDetails.options["min_time"],
@@ -89,14 +90,14 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   setAvailability={setAvailability}
                 />
               </div>
-              <div className="row is-right" style={{marginTop: "20px"}}>
+              <div className="row is-right" style={{ marginTop: "20px" }}>
                 <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
                 <button className="button bg-success text-white">Submit</button>
               </div>
             </div>
           </div>
 
-          <div className={`col`} style={{height: "100%"}}>
+          {!eventDetails.private ? (<div className={`col`} style={{ height: "100%" }}>
             <div className="container">
               <div className="row">
                 <h3 className="is-center">
@@ -106,19 +107,20 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
               <div className="row is-center">
                 <Schedule
                   days={eventDetails.options.type === "day" ?
-                          constructDays(eventDetails.options.days) : eventDetails.options.dates
+                    constructDays(eventDetails.options.days) :
+                    eventDetails.options.dates.map((d) => dayjs(d).format("DD MMM YY"))
                   }
                   slots={constructTimes(
                     eventDetails.options["min_time"],
                     eventDetails.options["max_time"]
                   )}
                   schedules={Object.assign({
-                    "me": availability || ""
+                    [`(me)`]: availability || ""
                   }, eventDetails.schedules)}
                 />
               </div>
             </div>
-          </div>
+          </div>) : null}
         </div>
       </div>
     </div>
@@ -134,21 +136,6 @@ function constructTimes(minTime: number, maxTime: number) {
   return (new Array(maxTime - minTime).fill(0)).map((_, i) => begin.add(
     (minTime + i) * 30, 'minute'
   ).format("HH:mm"));
-}
-
-function createDateString(selectedDays: Array<any>) {
-  const days = selectedDays[0].length;
-  const times = selectedDays.length;
-
-  let dateString = "";
-
-  for (let day = 1; day < days; day++) {
-    for (let time = 1; time < times; time++) {
-      dateString += selectedDays[time][day];
-    }
-  }
-
-  return dateString;
 }
 
 export default withRouter(GuestPage);

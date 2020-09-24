@@ -43,7 +43,7 @@ function ScheduleGrid({days, slots, schedules={}, availability, setAvailability}
     setMe(convertToArray(availability, days.length * slots.length));
   }, [availability]);
 
-  const names = Object.keys(schedules);
+  const names = Object.keys(schedules).filter((s) => schedules[s] !== "");
   const items = names.map((name) => schedules[name]);
 
   const handleDown = (col: number, row: number) => {
@@ -134,6 +134,11 @@ function ScheduleGrid({days, slots, schedules={}, availability, setAvailability}
           onMouseDown={handleDown(i, j)}
           onMouseUp={handleUp(i, j)}
           onMouseOver={handleHover(i, j)}
+          title={
+            `${items.map(mapRows(i * slots.length + j)).reduce(sum, 0)} / ${items.length} available` +
+            (items.length ? `\n${names.filter((n) => schedules[n][i * slots.length + j] === '1')
+            .join(", ")}` : '')
+          }
           className={`${styles.cell}`} style={{
             backgroundColor: setAvailability ? (me[i * slots.length + j] ? `rgb(0, 110, 255)` : 'white')
               : `rgba(0, 110, 255, ${items.map(mapRows(i * slots.length + j)).reduce(sum, 0) / items.length})`
