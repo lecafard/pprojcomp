@@ -102,7 +102,7 @@ function New({ history }: RouteComponentProps) {
             );
           })}
         </select>
-
+        <br />
         <div className="grouped">
           <label>Type:</label>
           <ul style={{ listStyleType: "none" }}>
@@ -149,6 +149,7 @@ function New({ history }: RouteComponentProps) {
                     color: days[i]
                         ? '#444'
                         : '#e8e8e8',
+                    border: 'solid #e8e8e8 1px'
                   }}
                   className={style.item}
                   onMouseDown={() => {

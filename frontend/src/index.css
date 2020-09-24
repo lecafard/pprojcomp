@@ -27,7 +27,7 @@ html {
 
 /* https://codepen.io/P1N2O/pen/pyBNzX */
 body {
-  background: linear-gradient(-45deg, #3523d5, #2370d5, #23ccd5, #1db8a8);
+  background: linear-gradient(-45deg, #734299, #3523d5, #2370d5, #1badb5);
   background-size: 400% 400%;
   animation: gradient 15s ease infinite;
 }
