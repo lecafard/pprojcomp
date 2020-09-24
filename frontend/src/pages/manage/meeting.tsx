@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import ReadOnlySchedule from "../../components/schedule/read_only_schedule";
 import { Meeting } from '../../api/schemas';
 import api from '../../api';
-import { DAYS } from '../../constants';
+import { constructDays, constructTimes } from "../../utilities";
 
 import style from "./style.module.css";
 import meetingStyles from "./meeting-styles.module.css";
@@ -19,15 +19,13 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
       api.getEventByOwnerKey(id)
         .then((data) => {
           setEventDetails(data.data)
-          setFilteredPeople(JSON.parse(JSON.stringify(sampleSchedules)))
+          setFilteredPeople(JSON.parse(JSON.stringify(data.data.schedules)))
         })
         .catch((e) => {
           console.error(e);
         });
     })();
   }, []);
-
-  const sampleSchedules = {"test": "010101101111111111111111010101", "test2": "001111001010101011010" };
 
   if (!eventDetails || !filteredPeople) return null;
 
@@ -50,13 +48,13 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                 eventDetails.options["min_time"],
                 eventDetails.options["max_time"]
               )}
-              userSelectedTimes={filterSchedules(sampleSchedules, filteredPeople)}
+              userSelectedTimes={filterSchedules(eventDetails.schedules, filteredPeople)}
             />
           </div>
 
           <div className="col" style={{display: "flex"}}>
             <ul className={`${meetingStyles["list"]}`}>
-              {Object.keys(sampleSchedules).map(name => {
+              {Object.keys(eventDetails.schedules).map(name => {
                 return (     
                   <li className={`${meetingStyles["list-item"]} ${meetingStyles.title}`}
                     onClick={() => {
@@ -81,17 +79,6 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
   );
 }
 
-function constructDays(days: string) {
-  return DAYS.filter((_, i) => days[i] === "1");
-}
-
-function constructTimes(minTime: number, maxTime: number) {
-  const begin = dayjs().startOf('day');
-  return (new Array(maxTime - minTime).fill(0)).map((_, i) => begin.add(
-    (minTime + i) * 30, 'minute'
-  ).format("HH:mm"));
-}
-
 function filterSchedules(allSchedules: {}, wantedPeople: {}) {
   const filteredSchedules = {};
 
@@ -105,6 +92,5 @@ function filterSchedules(allSchedules: {}, wantedPeople: {}) {
 
   return filteredSchedules
 }
-
 
 export default withRouter(ManageMeetingPage);
