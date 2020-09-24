@@ -27,7 +27,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
     })();
   }, []);
 
-  const sampleSchedules = {"test": "1001", "test2": "001"};
+  const sampleSchedules = {"test": "010101101111111111111111010101", "test2": "001111001010101011010" };
 
   if (!eventDetails || !filteredPeople) return null;
 
@@ -61,12 +61,14 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                   <li className={`${meetingStyles["list-item"]} ${meetingStyles.title}`}
                     onClick={() => {
                       filteredPeople.hasOwnProperty(name) ? delete filteredPeople[name] : filteredPeople[name] = "";
-                      setFilteredPeople(JSON.parse(JSON.stringify(filteredPeople)));
+                      // this is a bit ugly, but gets React to recognise the change, should probably refactor.
+                      setFilteredPeople(JSON.parse(JSON.stringify(filteredPeople))); 
                     }}
                   > 
                     {name}
                     <br/>
                     <p className={`${meetingStyles["notes"]}`}>notes</p>
+                    <br/>
                     <p className={`${meetingStyles["toggle"]}`}>Show</p>
                   </li>
                 )
@@ -93,11 +95,13 @@ function constructTimes(minTime: number, maxTime: number) {
 function filterSchedules(allSchedules: {}, wantedPeople: {}) {
   const filteredSchedules = {};
 
-  for (let person in wantedPeople) {
-    filteredSchedules[person] = allSchedules[person];
+  for (let person in allSchedules) {
+    if (wantedPeople.hasOwnProperty(person)) {
+      filteredSchedules[person] = allSchedules[person];
+    } else {
+      filteredSchedules[person] = "0";
+    }
   }
-
-  console.log(filteredSchedules);
 
   return filteredSchedules
 }
