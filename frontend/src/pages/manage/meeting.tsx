@@ -25,19 +25,28 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
   if (!eventDetails) return null;
 
   return (
-    <div className={` ${style.view}`} >
-      <div className="container" style={{display: "flex"}}>
-        <ReadOnlySchedule
-          dates={eventDetails.options.type === "day" ?
-            constructDays(eventDetails.options.days) :
-            eventDetails.options.dates.map((d) => dayjs(d).format("DD MMM YY"))
-          }
-          times={constructTimes(
-            eventDetails.options["min_time"],
-            eventDetails.options["max_time"]
-          )}
-          userSelectedTimes={eventDetails.schedules}
-        />
+    <div className={`${style.view}`}>
+      <div className="container">
+        <div className={`${style.eventDetails}`}>
+          <h3>{eventDetails.name}</h3>
+          <h4>{eventDetails.location}</h4>
+        </div>
+
+        <div className={`row`}>
+          <div className="col" style={{display: "flex"}}>
+            <ReadOnlySchedule
+              dates={eventDetails.options.type === "day" ?
+                constructDays(eventDetails.options.days) :
+                eventDetails.options.dates.map((d) => dayjs(d).format("DD MMM YY"))
+              }
+              times={constructTimes(
+                eventDetails.options["min_time"],
+                eventDetails.options["max_time"]
+              )}
+              userSelectedTimes={eventDetails.schedules}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
