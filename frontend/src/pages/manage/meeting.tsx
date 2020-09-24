@@ -8,28 +8,35 @@ import api from '../../api';
 import { DAYS } from '../../constants';
 
 import style from "./style.module.css";
+import meetingStyles from "./meeting-styles.module.css";
 
 function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
+  const [filteredPeople, setFilteredPeople] = useState<{}>()
 
   useEffect(() => {
     (async () => {
       api.getEventByOwnerKey(id)
-        .then((data) => setEventDetails(data.data))
+        .then((data) => {
+          setEventDetails(data.data)
+          setFilteredPeople(JSON.parse(JSON.stringify(sampleSchedules)))
+        })
         .catch((e) => {
           console.error(e);
         });
     })();
   }, []);
 
-  if (!eventDetails) return null;
+  const sampleSchedules = {"test": "1001", "test2": "001"};
+
+  if (!eventDetails || !filteredPeople) return null;
 
   return (
     <div className={`${style.view}`}>
       <div className="container">
         <div className={`${style.eventDetails}`}>
-          <h3>{eventDetails.name}</h3>
-          <h4>{eventDetails.location}</h4>
+          <h2>{eventDetails.name}</h2>
+          <h3>{eventDetails.location}</h3>
         </div>
 
         <div className={`row`}>
@@ -43,8 +50,28 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                 eventDetails.options["min_time"],
                 eventDetails.options["max_time"]
               )}
-              userSelectedTimes={eventDetails.schedules}
+              userSelectedTimes={filterSchedules(sampleSchedules, filteredPeople)}
             />
+          </div>
+
+          <div className="col" style={{display: "flex"}}>
+            <ul className={`${meetingStyles["list"]}`}>
+              {Object.keys(sampleSchedules).map(name => {
+                return (     
+                  <li className={`${meetingStyles["list-item"]} ${meetingStyles.title}`}
+                    onClick={() => {
+                      filteredPeople.hasOwnProperty(name) ? delete filteredPeople[name] : filteredPeople[name] = "";
+                      setFilteredPeople(JSON.parse(JSON.stringify(filteredPeople)));
+                    }}
+                  > 
+                    {name}
+                    <br/>
+                    <p className={`${meetingStyles["notes"]}`}>notes</p>
+                    <p className={`${meetingStyles["toggle"]}`}>Show</p>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
         </div>
       </div>
@@ -62,5 +89,18 @@ function constructTimes(minTime: number, maxTime: number) {
     (minTime + i) * 30, 'minute'
   ).format("HH:mm"));
 }
+
+function filterSchedules(allSchedules: {}, wantedPeople: {}) {
+  const filteredSchedules = {};
+
+  for (let person in wantedPeople) {
+    filteredSchedules[person] = allSchedules[person];
+  }
+
+  console.log(filteredSchedules);
+
+  return filteredSchedules
+}
+
 
 export default withRouter(ManageMeetingPage);
