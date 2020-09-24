@@ -58,7 +58,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                 return (     
                   <li className={`${meetingStyles["list-item"]} ${meetingStyles.title}`}
                     onClick={() => {
-                      filteredPeople.hasOwnProperty(name) ? delete filteredPeople[name] : filteredPeople[name] = "";
+                      filteredPeople.hasOwnProperty(name) ? delete filteredPeople[name] : filteredPeople[name] = "1";
                       // this is a bit ugly, but gets React to recognise the change, should probably refactor.
                       setFilteredPeople(JSON.parse(JSON.stringify(filteredPeople))); 
                     }}
@@ -67,7 +67,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                     <br/>
                     <p className={`${meetingStyles["notes"]}`}>{eventDetails.notes[name] ? eventDetails.notes[name] : "No notes applicable"}</p>
                     <br/>
-                    <p className={`${meetingStyles["toggle"]}`}>Show</p>
+                    <p className={`${meetingStyles["toggle"]}`}>{filteredPeople[name] ? "Show" : "Hide"}</p>
                   </li>
                 )
               })}
