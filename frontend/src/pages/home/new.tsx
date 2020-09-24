@@ -139,7 +139,17 @@ function New({ history }: RouteComponentProps) {
                 }}
               >
                 <label
-                  style={{ backgroundColor: days[i] ? "green" : "red" }}
+                  style={{
+                    fontSize: "14px",
+                    borderRadius: "4px",
+                    textAlign: "center",
+                    backgroundColor: days[i]
+                        ? '#e8e8e8'
+                        : 'rgba(0,0,0,0)',
+                    color: days[i]
+                        ? '#444'
+                        : '#e8e8e8',
+                  }}
                   className={style.item}
                   onMouseDown={() => {
                     setDays(days.map((d, j) => (i === j ? !days[i] : d)));
@@ -165,11 +175,21 @@ function New({ history }: RouteComponentProps) {
                     <div
                       className={style.item}
                       style={{
+                        fontSize: "14px",
+                        borderRadius: "4px",
+                        textAlign: "center",
                         backgroundColor: dates
-                          .indexOf(currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD")) 
-                          !== -1 
-                          ? 'green'
-                          : 'red'
+                          .indexOf(currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD"))
+                          !== -1
+                          ? '#e8e8e8'
+                          : 'rgba(0,0,0,0)',
+                        color: dates
+                          .indexOf(currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD"))
+                          !== -1
+                          ? '#444'
+                          : '#e8e8e8',
+                        border: 'solid #e8e8e8 1px'
+
                       }}
                       onMouseDown={() => {
                         const date = currentDate.add(week * 7 + day, 'day').format("YYYY-MM-DD");
@@ -198,7 +218,7 @@ function New({ history }: RouteComponentProps) {
             ))}
           </div>
         </div>) : null}
-
+        <br />
         <p>
           <label>
             <input
