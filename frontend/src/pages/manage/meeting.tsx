@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 import ReadOnlySchedule from "../../components/schedule/read_only_schedule";
@@ -8,12 +9,8 @@ import { DAYS } from '../../constants';
 
 import style from "./style.module.css";
 
-function ManageMeetingPage() {
-  const id = "qxaQVT5_-F9oaMa4";
+function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
-  const [dates, setDates] = useState();
-  const [times, setTimes] = useState([]);
-  const [schedules, setSchedules] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -39,6 +36,7 @@ function ManageMeetingPage() {
             eventDetails.options["min_time"],
             eventDetails.options["max_time"]
           )}
+          userSelectedTimes={eventDetails.schedules}
         />
       </div>
     </div>
@@ -56,4 +54,4 @@ function constructTimes(minTime: number, maxTime: number) {
   ).format("HH:mm"));
 }
 
-export default ManageMeetingPage;
+export default withRouter(ManageMeetingPage);
