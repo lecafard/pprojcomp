@@ -27,7 +27,8 @@ def login(meeting_id, name, password):
         meeting_id=meeting_id,
         name=name
     ).first()
-
+    if name == "(me)":
+        abort(401)
     if entry and entry.password == "" and password == "":
         # no password
         return entry
