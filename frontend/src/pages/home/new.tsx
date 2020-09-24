@@ -24,7 +24,7 @@ function New({ history }: RouteComponentProps) {
         max_time: parseInt(values.options.maxTime),
       },
       private: !!values.private,
-      allow_registration: !!values.allowRegistration,
+      allow_registration: !values.disallowRegistration,
     };
 
     if (meeting.options.type === "day") {
@@ -38,7 +38,7 @@ function New({ history }: RouteComponentProps) {
     api
       .newMeeting(meeting)
       .then((data) => {
-        history.push(`/m/${data.data.owner_key}`);
+        history.push(`/s/${data.data.owner_key}`);
       })
       .catch((e) => {
         console.error(e);
@@ -213,12 +213,12 @@ function New({ history }: RouteComponentProps) {
 
           <label>
             <input
-              name="allowRegistration"
+              name="disallowRegistration"
               type="checkbox"
               value="1"
               ref={register()}
             />
-            Allow Registration
+            Disallow Registration
           </label>
         </p>
 

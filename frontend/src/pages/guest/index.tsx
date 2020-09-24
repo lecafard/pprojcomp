@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import dayjs from 'dayjs';
 
 import Schedule from '../../components/schedule';
@@ -7,7 +7,7 @@ import style from "./style.module.css";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import api from '../../api';
 import { DAYS } from '../../constants';
-import { Meeting } from '../../api/schemas';
+import { Meeting, AuthedSchedule, Auth } from '../../api/schemas';
 
 function ErrorBox(props: any) {
   return (
@@ -19,8 +19,11 @@ function ErrorBox(props: any) {
 
 function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
-  const [availability, setAvailability] = useState<string | null>(null);
-  const [clearTimes, setClearTimes] = useState(false);
+  const [auth, setAuth] = useState<Auth>({
+    name: "",
+    password: ""
+  });
+  const [schedule, setSchedule] = useState<AuthedSchedule>(null);
 
   useEffect(() => {
     (async () => {
@@ -48,7 +51,33 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
         localStorage.setItem("myMeetings", JSON.stringify({ "meetingsList": arr['meetingsList'] }));
       }
     }
-  }, [eventDetails])
+  }, [eventDetails]);
+
+  const handleLogin = (e: FormEvent) => {
+    e.preventDefault();
+
+    api.getAuthedGuest(id, auth.name, auth.password)
+      .then((data) => {
+        setSchedule(data.data);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }
+
+  const handleSave = () => {
+    api.updateAuthedGuest(id, auth.name, auth.password, schedule)
+      .then((data) => {
+        setEventDetails({...eventDetails, schedules: {
+          ...eventDetails.schedules,
+          [auth.name]: schedule.schedule 
+        }});
+        setSchedule(null);
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  }
 
   if (!eventDetails) {
     return (
@@ -70,7 +99,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
 
         <div className={`row`}>
           <div className={`col`} style={{ display: "flex" }}>
-            <div className="container">
+            {schedule ? <div className="container">
               <div className="row">
                 <h3 className="is-center">
                   Select your availability
@@ -86,21 +115,65 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                     eventDetails.options["min_time"],
                     eventDetails.options["max_time"]
                   )}
-                  availability={availability || ""}
-                  setAvailability={setAvailability}
+                  availability={schedule.schedule}
+                  setAvailability={(entry) => setSchedule({...schedule, schedule: entry})}
                 />
               </div>
-              <div className="row is-right" style={{ marginTop: "20px" }}>
-                <button className="button bg-error text-white" onClick={() => setClearTimes(!clearTimes)}>Clear</button>
-                <button className="button bg-success text-white">Submit</button>
+              <div className="row is-center" style={{ marginTop: "20px" }}>
+
+                <button
+                  className="button bg-error text-white"
+                  onClick={() => setSchedule(null)}
+                >
+                  Logout
+                </button>
+                <button
+                  className="button bg-success text-white"
+                  onClick={handleSave}
+                >
+                  Submit
+                </button>
               </div>
-            </div>
+            </div> :
+              <div className="container">
+                <div className="row">
+                  <h3>
+                    Please login to enter your schedule
+                  </h3>
+                </div>
+                <div className="row is-center">
+                  <form onSubmit={handleLogin}>
+                    <label>Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      onChange={(name: ChangeEvent<HTMLInputElement>) => setAuth({
+                        ...auth,
+                        name: name.target.value
+                      })}/>
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      onChange={(password: ChangeEvent<HTMLInputElement>) => setAuth({
+                        ...auth,
+                        password: password.target.value
+                      })}
+                    />
+                    <br />
+
+                    <button type="submit" className="button bg-success text-white">
+                      Submit
+                    </button>
+                  </form>
+                </div>
+              </div>}
           </div>
 
           {!eventDetails.private ? (<div className={`col`} style={{ height: "100%" }}>
             <div className="container">
               <div className="row">
-                <h3 className="is-center">
+                <h3>
                   Group availability
                 </h3>
               </div>
@@ -114,9 +187,9 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                     eventDetails.options["min_time"],
                     eventDetails.options["max_time"]
                   )}
-                  schedules={Object.assign({
-                    [`(me)`]: availability || ""
-                  }, eventDetails.schedules)}
+                  schedules={schedule ? Object.assign(eventDetails.schedules, {
+                    [auth.name]: schedule ? schedule.schedule : ""
+                  }) : eventDetails.schedules}
                 />
               </div>
             </div>

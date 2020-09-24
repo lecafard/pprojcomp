@@ -8,26 +8,25 @@ import api from '../../api';
 import { constructDays, constructTimes } from "../../utilities";
 
 import style from "./style.module.css";
-import meetingStyles from "./meeting-styles.module.css";
 
 function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
-  const [filteredPeople, setFilteredPeople] = useState<{}>()
+  const [people, setPeople] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       api.getEventByOwnerKey(id)
         .then((data) => {
-          setEventDetails(data.data)
-          setFilteredPeople(JSON.parse(JSON.stringify(data.data.schedules)))
+          setEventDetails(data.data);
+          setPeople(Object.keys(data.data.schedules));
         })
         .catch((e) => {
           console.error(e);
         });
     })();
-  }, []);
+  }, [id]);
 
-  if (!eventDetails || !filteredPeople) return null;
+  if (!eventDetails) return null;
 
   return (
     <div className={`${style.view}`}>
@@ -48,26 +47,27 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                 eventDetails.options["min_time"],
                 eventDetails.options["max_time"]
               )}
-              userSelectedTimes={filterSchedules(eventDetails.schedules, filteredPeople)}
+              userSelectedTimes={people.reduce((obj, x) => Object.assign(obj, { [x]: eventDetails.schedules[x] }), {})}
             />
           </div>
 
           <div className="col" style={{display: "flex"}}>
-            <ul className={`${meetingStyles["list"]}`}>
+            <ul className={`${style["list"]}`}>
               {Object.keys(eventDetails.schedules).map(name => {
                 return (     
-                  <li className={`${meetingStyles["list-item"]} ${meetingStyles.title}`}
-                    onClick={() => {
-                      filteredPeople.hasOwnProperty(name) ? delete filteredPeople[name] : filteredPeople[name] = "1";
-                      // this is a bit ugly, but gets React to recognise the change, should probably refactor.
-                      setFilteredPeople(JSON.parse(JSON.stringify(filteredPeople))); 
-                    }}
+                  <li className={`${style["list-item"]} ${style.title}`}
+                    onClick={() => setPeople(
+                      people.includes(name) ? 
+                      people.filter((n) => n !== name) :
+                      [...people, name]
+                    )}
+                    key={name}
                   > 
                     {name}
                     <br/>
-                    <p className={`${meetingStyles["notes"]}`}>{eventDetails.notes[name] ? eventDetails.notes[name] : "No notes applicable"}</p>
+                    <p className={`${style["notes"]}`}>{eventDetails.notes[name] ? eventDetails.notes[name] : "No notes"}</p>
                     <br/>
-                    <p className={`${meetingStyles["toggle"]}`}>{filteredPeople[name] ? "Show" : "Hide"}</p>
+                    <p className={`${style["toggle"]}`}>{!people.includes(name) ? "Show" : "Hide"}</p>
                   </li>
                 )
               })}
@@ -77,20 +77,6 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
       </div>
     </div>
   );
-}
-
-function filterSchedules(allSchedules: {}, wantedPeople: {}) {
-  const filteredSchedules = {};
-
-  for (let person in allSchedules) {
-    if (wantedPeople.hasOwnProperty(person)) {
-      filteredSchedules[person] = allSchedules[person];
-    } else {
-      filteredSchedules[person] = "0";
-    }
-  }
-
-  return filteredSchedules
 }
 
 export default withRouter(ManageMeetingPage);

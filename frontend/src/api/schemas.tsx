@@ -20,6 +20,16 @@ export interface MeetingOptions {
   max_time: number;
 }
 
+export interface Auth {
+  name: string;
+  password: string;
+}
+
+export interface AuthedSchedule {
+  notes?: string;
+  schedule?: string;
+}
+
 export interface APIResponse<T> {
   success: boolean;
   error?: any;

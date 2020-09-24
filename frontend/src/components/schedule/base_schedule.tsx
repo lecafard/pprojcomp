@@ -41,7 +41,7 @@ function ScheduleGrid({days, slots, schedules={}, availability, setAvailability}
 
   useEffect(() => {
     setMe(convertToArray(availability, days.length * slots.length));
-  }, [availability]);
+  }, [availability, days, slots]);
 
   const names = Object.keys(schedules).filter((s) => schedules[s] !== "");
   const items = names.map((name) => schedules[name]);
@@ -142,7 +142,7 @@ function ScheduleGrid({days, slots, schedules={}, availability, setAvailability}
           className={`${styles.cell}`} style={{
             backgroundColor: setAvailability ? (me[i * slots.length + j] ? `rgb(0, 110, 255)` : 'white')
               : `rgba(0, 110, 255, ${items.map(mapRows(i * slots.length + j)).reduce(sum, 0) / items.length})`
-          }} key={`d${i}t${j}`} />
+          }} key={`d${i}t${j}l${names.length}`} />
       )))))
     ].flat()}</div>);
 }
