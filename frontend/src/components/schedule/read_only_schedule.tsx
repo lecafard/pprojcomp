@@ -8,14 +8,14 @@ import styles from "./style.module.css";
 
 interface ReadOnlyScheduleProps {
   dates?: string[];
-  times: dayjs.Dayjs[];
+  times: string[];
   userSelectedTimes?: any;
 }
 
 function ReadOnlySchedule({dates=["Monday"], times, userSelectedTimes}: ReadOnlyScheduleProps) {
   return constructScheduleGrid({
     days: dates,
-    slots: times.map(t => t.format("HH:MM")), schedules: userSelectedTimes
+    slots: times, schedules: userSelectedTimes
   });
 }
 
