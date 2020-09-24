@@ -160,41 +160,24 @@ def update_schedule(_id):
         abort(500)
 
     entry = login(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
-    if not entry:
+    if not entry and res.allow_registration:
         entry = create_user(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
         db.session.add(entry)
+    elif not entry and not res.allow_registration:
+        abort(401)
 
-    # initialise bitfield to record dates
-    data = request.json["entry"]
-    if len(data) != n_slots:
-        jsonify(success=False, error="invalid number of slots")
+    if request.json["notes"]:
+        entry.notes = request.json["notes"]
+    
+    if request.json["schedule"]:
+        # initialise bitfield to record dates
+        data = request.json["schedule"]
+        if len(data) != n_slots:
+            jsonify(success=False, error="invalid number of slots")
 
-    slots = bitarray(data, endian="big")
-    entry.availability = slots.tobytes()
+        slots = bitarray(data, endian="big")
+        entry.availability = slots.tobytes()
+
     db.session.commit()
     
-    return jsonify(success=True)
-
-@blueprint.route('/<_id>/notes', methods=['POST'])
-def update_notes(_id):
-    """
-    Updates the current user's notes.
-    """
-
-    class Validator(Inputs):
-        json = [JsonSchema(schema=schemas.guest_notes)]
-    inputs = Validator(request)
-    if not inputs.validate():
-        return jsonify(success=False, error=inputs.errors)
-    
-    res = Meeting.query.filter_by(guest_key=_id).first()
-    if res == None:
-        abort(404)
-    
-    entry = login(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
-    if not entry:
-        entry = create_user(res.id, request.json["auth"]["name"], request.json["auth"]["password"])
-    
-    entry.notes = request.json["notes"]
-    db.session.commit()
     return jsonify(success=True)

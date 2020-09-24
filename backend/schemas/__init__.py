@@ -42,28 +42,18 @@ guest_entry = {
   "type": "object",
   "properties": {
     "auth": auth,
-    "entry": {
+    "schedule": {
       "type": "string",
       "pattern": "[01]+",
       "minLength": 1,
       "maxLength": 1344
-    }
-  },
-  "required": ["auth", "entry"]
-}
-
-guest_notes = {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Guest notes object",
-  "type": "object",
-  "properties": {
-    "auth": auth,
+    },
     "notes": {
       "type": "string",
       "maxLength": 1024
     }
   },
-  "required": ["auth", "notes"]
+  "required": ["auth"]
 }
 
 options = {
