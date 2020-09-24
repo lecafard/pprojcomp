@@ -65,7 +65,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                   > 
                     {name}
                     <br/>
-                    <p className={`${meetingStyles["notes"]}`}>notes</p>
+                    <p className={`${meetingStyles["notes"]}`}>{eventDetails.notes[name] ? eventDetails.notes[name] : "No notes applicable"}</p>
                     <br/>
                     <p className={`${meetingStyles["toggle"]}`}>Show</p>
                   </li>
