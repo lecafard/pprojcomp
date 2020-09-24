@@ -14,8 +14,13 @@ interface SubmitScheduleProps {
 }
 
 function SubmitSchedule({dates=["Monday"], times, timeHandler,  clearDates}: SubmitScheduleProps) {
-  const [current, setCurrent] = useState("");
-  return constructScheduleGrid(dates, times.map(t => t.format("HH:MM")), {}, current, setCurrent);
+  const [availability, setAvailability] = useState("");
+  return constructScheduleGrid({
+    days: dates, 
+    slots: times.map(t => t.format("HH:MM")), schedules: {}, 
+    availability, 
+    setAvailability: setAvailability
+  });
 }
 
 export default SubmitSchedule;

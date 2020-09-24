@@ -17,19 +17,31 @@ function max(a: number, b: number) {
   return (a > b) ? a : b;
 }
 
-function ScheduleGrid(days: string[],
-  slots: string[],
-  schedules: { [key: string]: string },
-  current = "",
-  setAvailability?: (string) => void) {
+function convertToArray(str: string, size: number) {
+  let out = new Array(size).fill(0);
+  if (!str) return out;
+  for (let i = 0; i < str.length; i++) {
+    out[i] = (str[i] === "1") ? 1 : 0;
+  }
+  return out;
+}
 
+interface Props {
+  days: string[];
+  slots: string[];
+  schedules?: { [key: string]: string };
+  availability?: string;
+  setAvailability?: (string) => void;
+}
+
+function ScheduleGrid({days, slots, schedules={}, availability, setAvailability}: Props) {
   const [mouseDown, setMouseDown] = useState<boolean | null>(null);
   const [mouseStart, setMouseStart] = useState([0, 0]);
-  const [me, setMe] = useState(current);
+  const [me, setMe] = useState(convertToArray(availability, days.length * slots.length));
 
   useEffect(() => {
-    setMe(current);
-  }, [current]);
+    setMe(convertToArray(availability, days.length * slots.length));
+  }, [availability]);
 
   const names = Object.keys(schedules);
   const items = names.map((name) => schedules[name]);
@@ -39,7 +51,7 @@ function ScheduleGrid(days: string[],
 
     return () => {
       setMouseStart([col, row]);
-      if (me[col * slots.length + row] === "1") {
+      if (me[col * slots.length + row]) {
         setMouseDown(false);
       } else {
         setMouseDown(true);
@@ -53,11 +65,6 @@ function ScheduleGrid(days: string[],
       setMouseDown(null);
       if (!setAvailability) return;
 
-      // Calculate what to fill
-      let out = new Array(days.length * slots.length).fill(0);
-      for (let i = 0; i < me.length; i++) {
-        out[i] = (me[i] === "1") ? 1 : 0;
-      }
 
       const minCol = min(col, mouseStart[0]);
       const maxCol = max(col, mouseStart[0]);
@@ -66,11 +73,11 @@ function ScheduleGrid(days: string[],
 
       for (let i = minCol; i <= maxCol; i++) {
         for (let j = minRow; j <= maxRow; j++) {
-          out[i * slots.length + j] = (mouseDown ? 1 : 0);
+          me[i * slots.length + j] = (mouseDown ? 1 : 0);
         }
       }
 
-      setAvailability(out.join(""));
+      setAvailability(me.join(""));
     }
   }
 
@@ -79,33 +86,28 @@ function ScheduleGrid(days: string[],
 
     return () => {
       if (mouseDown === null) return;
-      // Calculate what to fill
-      let out = new Array(days.length * slots.length).fill(0);
-      for (let i = 0; i < me.length; i++) {
-        out[i] = (me[i] === "1") ? 1 : 0;
-      }
 
       const minCol = min(col, mouseStart[0]);
       const maxCol = max(col, mouseStart[0]);
       const minRow = min(row, mouseStart[1]);
       const maxRow = max(row, mouseStart[1]);
 
+      const res = convertToArray(availability, days.length * slots.length);
       for (let i = minCol; i <= maxCol; i++) {
         for (let j = minRow; j <= maxRow; j++) {
-          out[i * slots.length + j] = (mouseDown ? 1 : 0);
+          res[i * slots.length + j] = (mouseDown ? 1 : 0);
         }
       }
-
-      setMe(out.join(""));
+      
+      setMe(res);
     }
   }
 
   const handleLeave = () => {
     setMouseDown(null);
     if (!setAvailability) return null;
-    setMe(current);
+    setMe(convertToArray(availability, days.length * slots.length));
   }
-
 
 
   return (<div className={`read-only-schedule ${styles.schedule} ${styles.unselectable}`}
@@ -133,7 +135,7 @@ function ScheduleGrid(days: string[],
           onMouseUp={handleUp(i, j)}
           onMouseOver={handleHover(i, j)}
           className={`${styles.cell}`} style={{
-            backgroundColor: me ? (me[i * slots.length + j] === '1' ? `rgb(0, 110, 255)` : 'white')
+            backgroundColor: setAvailability ? (me[i * slots.length + j] ? `rgb(0, 110, 255)` : 'white')
               : `rgba(0, 110, 255, ${items.map(mapRows(i * slots.length + j)).reduce(sum, 0) / items.length})`
           }} key={`d${i}t${j}`} />
       )))))

@@ -13,8 +13,10 @@ interface ReadOnlyScheduleProps {
 }
 
 function ReadOnlySchedule({dates=["Monday"], times, userSelectedTimes}: ReadOnlyScheduleProps) {
-  console.log(userSelectedTimes);
-  return constructScheduleGrid(dates, times.map(t => t.format("HH:MM")), userSelectedTimes);
+  return constructScheduleGrid({
+    days: dates,
+    slots: times.map(t => t.format("HH:MM")), schedules: userSelectedTimes
+  });
 }
 
 export default ReadOnlySchedule;

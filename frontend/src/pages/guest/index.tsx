@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 
-import { ReadOnlySchedule, SubmitSchedule } from '../../components/schedule';
+import Schedule from '../../components/schedule';
 
 import style from "./style.module.css";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -19,7 +19,7 @@ function ErrorBox(props: any) {
 
 function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: string }>) {
   const [eventDetails, setEventDetails] = useState<Meeting | null>(null);
-  const [userSelectedTimes, setUserSelectedTimes] = useState(null);
+  const [availability, setAvailability] = useState<string | null>(null);
   const [clearTimes, setClearTimes] = useState(false);
 
   useEffect(() => {
@@ -77,13 +77,16 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                 </h3>
               </div>
               <div className="row is-center">
-                <SubmitSchedule
-                  dates={eventDetails.options.type === "day" ?
+              <Schedule
+                  days={eventDetails.options.type === "day" ?
                           constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
-                  times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
-                  timeHandler={setUserSelectedTimes}
-                  clearDates={clearTimes}
+                  slots={constructTimes(
+                    eventDetails.options["min_time"],
+                    eventDetails.options["max_time"]
+                  )}
+                  availability={availability || ""}
+                  setAvailability={setAvailability}
                 />
               </div>
               <div className="row is-right" style={{marginTop: "20px"}}>
@@ -101,12 +104,17 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                 </h3>
               </div>
               <div className="row is-center">
-                <ReadOnlySchedule
-                  dates={eventDetails.options.type === "day" ?
+                <Schedule
+                  days={eventDetails.options.type === "day" ?
                           constructDays(eventDetails.options.days) : eventDetails.options.dates
                   }
-                  times={constructTimes(eventDetails.options["min_time"], eventDetails.options["max_time"])}
-                  userSelectedTimes={eventDetails.schedules || {}}
+                  slots={constructTimes(
+                    eventDetails.options["min_time"],
+                    eventDetails.options["max_time"]
+                  )}
+                  schedules={Object.assign({
+                    "me": availability || ""
+                  }, eventDetails.schedules)}
                 />
               </div>
             </div>
@@ -122,12 +130,10 @@ function constructDays(days: string) {
 }
 
 function constructTimes(minTime: number, maxTime: number) {
-  const times = [dayjs().hour(0).minute(0)];
-  for (let i = 1; i < maxTime; i++) {
-    times.push(times[i - 1].add(30, "minute"));
-  }
-
-  return times.slice(minTime);
+  const begin = dayjs().startOf('day');
+  return (new Array(maxTime - minTime).fill(0)).map((_, i) => begin.add(
+    (minTime + i) * 30, 'minute'
+  ).format("HH:mm"));
 }
 
 function createDateString(selectedDays: Array<any>) {
