@@ -33,7 +33,10 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
       <div className="container">
         <div className={`${style.eventDetails}`}>
           <h2>{eventDetails.name}</h2>
-          <h3>{eventDetails.location}</h3>
+          <div>
+            <h3>{eventDetails.location}</h3>
+            <p>Guest key: {eventDetails.guest_key}</p>
+          </div>
         </div>
 
         <div className={`row`}>
