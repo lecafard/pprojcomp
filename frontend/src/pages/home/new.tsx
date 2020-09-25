@@ -39,12 +39,30 @@ function New({ history }: RouteComponentProps) {
       .newMeeting(meeting)
       .then((data) => {
         history.push(`/s/${data.data.owner_key}`);
+        saveMeeting(data.data.owner_key, meeting);
       })
       .catch((e) => {
         console.error(e);
         alert("error");
       });
   };
+
+  const saveMeeting = (owner_key: string, meeting: Meeting) => {
+    const savedDetails = {
+      "id": owner_key,
+      "name": meeting.name,
+      "location": meeting.location
+    }
+
+    let arr = JSON.parse(localStorage.getItem("managedMeetings"))
+    if (arr === null) {
+      localStorage.setItem("managedMeetings", JSON.stringify({ "managedMeetings": [savedDetails] }));
+    } else {
+      arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== owner_key)
+      arr['meetingsList'].push(savedDetails)
+      localStorage.setItem("managedMeetings", JSON.stringify({ "meetingsList": arr['meetingsList'] }));
+    }
+  }
 
   const type = watch("options[type]");
 
