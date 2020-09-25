@@ -6,3 +6,7 @@
     --color-darkGrey: #fff;
     --color-primary: #056637;
 }
+
+.logo {
+    font-family: 'Comic Neue', cursive;
+}

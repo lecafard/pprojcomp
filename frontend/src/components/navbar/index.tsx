@@ -6,7 +6,7 @@ import { NavLink, Link } from "react-router-dom";
 function Navbar() {
     return (<nav className={`nav ${style.navbar}`}>
         <div className="nav-left">
-            <Link to="/" className="brand">app</Link>
+            <Link to="/" className={`brand ${style.logo}`}>I Can't Believe It's Not W2M!</Link>
         </div>
         <div className="nav-right">
             <div className="tabs">
