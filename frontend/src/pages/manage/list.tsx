@@ -9,7 +9,7 @@ interface ListItemProps {
 
 function ListItem(props: ListItemProps) {
     return (
-        <div className={`${style.listItem}`}>
+        <div className={`${style["list-item"]}`}>
         <div className={`${style.title}`}> {props.name} </div>
         <div className={`${style.title2}`}> {props.location} </div>
         guest key: {props.id}
