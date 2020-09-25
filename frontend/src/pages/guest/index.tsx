@@ -105,7 +105,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   Select your availability
                 </h3>
               </div>
-              <div className="row is-center">
+              <div className="row is-center" style={{overflowX: "scroll"}}>
                 <Schedule
                   days={eventDetails.options.type === "day" ?
                     constructDays(eventDetails.options.days) :
@@ -118,10 +118,10 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   availability={schedule.schedule}
                   setAvailability={(entry) => setSchedule({...schedule, schedule: entry})}
                 />
-                <label>Notes (optional)</label>
+              </div>
+              <label>Notes (optional)</label>
                 <textarea value={schedule.notes} onChange={(e) => setSchedule({...schedule, notes: e.target.value})}>
                 </textarea>
-              </div>
               <div className="row is-center" style={{ marginTop: "20px" }}>
 
                 <button
@@ -181,7 +181,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   Group availability
                 </h3>
               </div>
-              <div className="row is-center">
+              <div className="row is-center" style={{overflowX: "scroll"}}>
                 <Schedule
                   days={eventDetails.options.type === "day" ?
                     constructDays(eventDetails.options.days) :

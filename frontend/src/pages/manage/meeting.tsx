@@ -79,7 +79,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
         </div>
 
         <div className={`row`}>
-          <div className="col">
+          <div className="col" style={{overflowX: "scroll"}}>
             <ReadOnlySchedule
               dates={eventDetails.options.type === "day" ?
                 constructDays(eventDetails.options.days) :

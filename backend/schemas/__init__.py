@@ -81,7 +81,7 @@ options = {
         "format": "date"
       },
       "minItems": 1,
-      "maxItems": 30
+      "maxItems": 40
     },
     "min_time": {
       "type": "integer",

@@ -6,8 +6,6 @@
     column-gap: 1px;
     row-gap: 1px;
     max-height: 100%;
-    overflow-y: scroll;
-    overflow-x: scroll;
 }
 
 .cell {

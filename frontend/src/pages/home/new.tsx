@@ -32,7 +32,7 @@ function New({ history }: RouteComponentProps) {
         .map((v) => (v ? "1" : 0))
         .join("");
     } else {
-      meeting.options.dates = dates;
+      meeting.options.dates = Array.from(new Set(dates));
     }
 
     api
