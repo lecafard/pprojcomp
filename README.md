@@ -5,9 +5,9 @@ brief blurb thing here
 
 features
 --------
-- stuff
-- other stuff
-- even better stuff
+- private schedules
+- block users from signing up
+- public schedules
 
 backend
 -------
@@ -20,3 +20,8 @@ frontend
 1. cd into frontend
 2. Run `yarn install`
 3. Run `yarn start`
+
+deploy
+------
+1. run `docker-compose -p when3meet up`.
+2. shove behind another proxy such as Caddy if you want to be safe.
