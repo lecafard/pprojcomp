@@ -22,7 +22,7 @@ function ManageListPage() {
   const guestMeetings = JSON.parse(localStorage.getItem("myMeetings"))
 
   return (    
-    <div className={` ${style.view}`} style={{overflowY: "scroll"}}>
+    <div className={` ${style.view}`} style={{overflowY: "auto"}}>
       <div className="container">
         {managedMeetings ? managedMeetings["meetingsList"]
           .map((meeting) => (

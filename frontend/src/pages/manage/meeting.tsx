@@ -68,7 +68,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
   if (!eventDetails) return null;
 
   return (
-    <div className={`${style.view}`}  style={{overflowY: "scroll"}}>
+    <div className={`${style.view}`}  style={{overflowY: "auto"}}>
       <div className="container">
         <div className={`${style.eventDetails}`}>
           <h2>{eventDetails.name}</h2>
@@ -79,7 +79,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
         </div>
 
         <div className={`row`}>
-          <div className="col" style={{overflowX: "scroll", display: "flex"}}>
+          <div className="col" style={{overflowX: "auto", display: "flex"}}>
             <ReadOnlySchedule
               dates={eventDetails.options.type === "day" ?
                 constructDays(eventDetails.options.days) :
