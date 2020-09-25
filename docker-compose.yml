@@ -5,8 +5,6 @@ services:
     image: lecafard/when3meet_backend
     build: ./backend
     restart: unless-stopped
-    ports:
-      - "8000:8000"
     depends_on:
       - postgres
     environment:
@@ -16,7 +14,7 @@ services:
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "80:8000"
     depends_on:
       - backend
   postgres:
