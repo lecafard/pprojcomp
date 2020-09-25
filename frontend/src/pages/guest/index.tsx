@@ -142,6 +142,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                 <div className="row">
                   <h3>
                     Please login to enter your schedule
+                    {!eventDetails.allow_registration ? " (registered users only)": ""}
                   </h3>
                 </div>
                 <div className="row is-center">

@@ -102,7 +102,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
             <button onClick={() => setPeople([])}>
               Hide all
             </button>
-            <div>
+            {!eventDetails.allow_registration && <div>
               <h3 className="is-center">Create a user</h3>
               <form onSubmit={handleCreateUser}>
                 <label>Name</label>
@@ -128,7 +128,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                   Submit
                 </button>
               </form>
-            </div>
+            </div>}
 
             <ul className={`${style["list"]}`}>
               {getNames(eventDetails).map(name => {
