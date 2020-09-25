@@ -86,7 +86,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
   };
 
   return (
-    <div className={` ${style.view}`}>
+    <div className={` ${style.view}`} style={{overflowY: "scroll"}}>
       <div className="container">
         <div className={` ${style.eventDetails}`}>
           <h3>
