@@ -12,6 +12,7 @@ import AboutPage from "./pages/about";
 import ManageListPage from "./pages/manage/list";
 import ManageMeetingPage from "./pages/manage/meeting";
 import Navbar from "./components/navbar";
+import Footer from "./components/footer";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Redirect to="/" />
           </Route>
         </Switch>
+        <Footer/>
       </Router>
     </div>
   );
