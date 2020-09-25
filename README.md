@@ -1,13 +1,12 @@
-where2meet2furious
+I Can't Believe It's Not W2M!
 ==================
-
-brief blurb thing here
 
 features
 --------
 - private schedules
 - block users from signing up
 - public schedules
+- won't get slapped by legal
 
 backend
 -------
