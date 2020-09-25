@@ -10,11 +10,11 @@ interface ListItemProps {
 
 function ListItem(props: ListItemProps) {
     return (
-        <div className={`${style["list-item"]}`}>
+      <div className={`${style["list-item"]}`}>
         <div className={`${style.title}`}> {props.type === "manager" ? "○" : ""} {props.name} </div>
         <div className={`${style.title2}`}> {props.location} </div>
         {props.type === "guest" ? "Guest key: " : "Owner key: "} {props.id}
-        </div>
+      </div>
     )
 }
 function ManageListPage() {
@@ -22,7 +22,7 @@ function ManageListPage() {
   const guestMeetings = JSON.parse(localStorage.getItem("myMeetings"))
 
   return (    
-    <div className={` ${style.view}`}>
+    <div className={` ${style.view}`} style={{overflowY: "scroll"}}>
       <div className="container">
         {managedMeetings ? managedMeetings["meetingsList"]
           .map((meeting) => (
