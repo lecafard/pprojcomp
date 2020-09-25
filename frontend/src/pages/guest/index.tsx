@@ -118,6 +118,9 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                   availability={schedule.schedule}
                   setAvailability={(entry) => setSchedule({...schedule, schedule: entry})}
                 />
+                <label>Notes (optional)</label>
+                <textarea value={schedule.notes} onChange={(e) => setSchedule({...schedule, notes: e.target.value})}>
+                </textarea>
               </div>
               <div className="row is-center" style={{ marginTop: "20px" }}>
 
@@ -151,7 +154,7 @@ function GuestPage({ match: { params: { id } } }: RouteComponentProps<{ id?: str
                         ...auth,
                         name: name.target.value
                       })}/>
-                    <label>Password</label>
+                    <label>Password (optional)</label>
                     <input
                       type="password"
                       name="password"

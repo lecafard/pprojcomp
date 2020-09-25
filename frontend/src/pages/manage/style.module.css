@@ -16,7 +16,6 @@
 
 .list-item:hover {
   cursor: pointer;
-  background: #e0e0e0 radial-gradient(circle, transparent 1%, #e0e0e0 1%) center/15000%;
 }
 
 .list-item .title {
@@ -28,5 +27,17 @@
 }
 
 .list-item .toggle {
+  -webkit-user-select: none; 
+  -moz-user-select: none;
+  -ms-user-select: none; 
   font-size: 14px;
+  border-radius: 4px;
+  text-align: center;
+  background-color: rgb(232, 232, 232);
+  color: rgb(68, 68, 68);
+  border: 1px solid rgb(232, 232, 232);
+}
+
+.list-item .toggle:hover {
+  background: #e0e0e0 radial-gradient(circle, transparent 1%, #e0e0e0 1%) center/15000%;
 }

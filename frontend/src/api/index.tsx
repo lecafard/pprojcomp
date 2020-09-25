@@ -45,6 +45,25 @@ class API {
       .get()
       .json();
   }
+
+  public createGuestManage(key: string, name: string, password: string) {
+    return this.wrapper.url(`/owner/${key}/create_user`)
+      .post({
+        name,
+        password
+      })
+      .unauthorized(() => {throw "Unauthorized"})
+      .json();
+  }
+
+  public deleteGuestManage(key: string, name: string) {
+    return this.wrapper.url(`/owner/${key}/delete_user`)
+      .post({
+        name
+      })
+      .unauthorized(() => {throw "Unauthorized"})
+      .json();
+  }
 }
 
 export default new API();
