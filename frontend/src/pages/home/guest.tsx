@@ -56,6 +56,7 @@ function Guest({ history }: RouteComponentProps) {
         Join!
             </button>
     </form>
+    <br />
     <form onSubmit={checkCode('m')}>
       <p>
         <label>Manager Code</label>
