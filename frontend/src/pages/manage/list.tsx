@@ -13,29 +13,36 @@ function ListItem(props: ListItemProps) {
         <div className={`${style["list-item"]}`}>
         <div className={`${style.title}`}> {props.name} </div>
         <div className={`${style.title2}`}> {props.location} </div>
-        {props.type === "guest" ? "Guest key" : "Owner key:"} {props.id}
+        {props.type === "guest" ? "Guest key: " : "Owner key: "} {props.id}
         </div>
     )
 }
 function ManageListPage() {
-    return (<div className={` ${style.view}`}>
-        {JSON.parse(localStorage.getItem("managedMeetings"))['managedMeetings']
+  const managedMeetings = JSON.parse(localStorage.getItem("managedMeetings"));
+  const guestMeetings = JSON.parse(localStorage.getItem("myMeetings"))
+
+  return (    
+    <div className={` ${style.view}`}>
+      <div className="container">
+        {managedMeetings ? managedMeetings["meetingsList"]
           .map((meeting) => (
             <a href={`/s/${meeting.id}`}>
-              <ListItem id={meeting.id} name={meeting.name} location={meeting.location} type="manager"/>
+              <ListItem id={meeting.id} name={meeting.name} location={meeting.location} type="guest"/>
             </a>
           ))
-        }
+        : null}
 
-        {JSON.parse(localStorage.getItem("myMeetings"))['meetingsList']
+        {guestMeetings ? guestMeetings["meetingsList"]
           .map((meeting) => (
             <a href={`/g/${meeting.id}`}>
               <ListItem id={meeting.id} name={meeting.name} location={meeting.location} type="guest"/>
             </a>
           ))
-        }
+        : null}
 
-        </div>)
+      </div>
+    </div>
+  )
 }
 
 export default ManageListPage;

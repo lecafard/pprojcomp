@@ -56,7 +56,7 @@ function New({ history }: RouteComponentProps) {
 
     let arr = JSON.parse(localStorage.getItem("managedMeetings"))
     if (arr === null) {
-      localStorage.setItem("managedMeetings", JSON.stringify({ "managedMeetings": [savedDetails] }));
+      localStorage.setItem("managedMeetings", JSON.stringify({ "meetingsList": [savedDetails] }));
     } else {
       arr['meetingsList'] = arr['meetingsList'].filter((x) => x.id !== owner_key)
       arr['meetingsList'].push(savedDetails)
