@@ -11,9 +11,9 @@ interface ListItemProps {
 function ListItem(props: ListItemProps) {
     return (
       <div className={`${style["list-item"]}`}>
-        <div className={`${style.title}`}> {props.type === "manager" ? "○" : ""} {props.name} </div>
+        <div className={`${style.title}`}> {props.name} </div>
         <div className={`${style.title2}`}> {props.location} </div>
-        {props.type === "guest" ? "Guest key: " : "Owner key: "} {props.id}
+        <div className={ props.type === "manager" ? `${style.owner}` : `${style.guest}`}> {props.type === "guest" ? "Guest key: " : "Owner key: "} {props.id} </div>
       </div>
     )
 }

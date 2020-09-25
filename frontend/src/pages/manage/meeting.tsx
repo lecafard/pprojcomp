@@ -68,12 +68,12 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
   if (!eventDetails) return null;
 
   return (
-    <div className={`${style.view}`}>
+    <div className={`${style.view}`}  style={{overflowY: "scroll"}}>
       <div className="container">
         <div className={`${style.eventDetails}`}>
           <h2>{eventDetails.name}</h2>
           <div>
-            <h3>{eventDetails.location}</h3>
+            <h4>{eventDetails.location}</h4>
             <p>Share this code with your guests: <a href={`/g/${eventDetails.guest_key}`}>{eventDetails.guest_key}</a></p>
           </div>
         </div>
@@ -93,13 +93,13 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
             />
           </div>
           <div className="col">
-            <button onClick={() => handleLoad(() => {})} className={"bg-primary text-white"}>
+            <button onClick={() => handleLoad(() => {})} className={`bg-primary text-white ${style.actions}`}>
               Refresh
-            </button>        
-            <button onClick={() => setPeople(Object.keys(eventDetails.schedules))}>
+            </button>
+            <button onClick={() => setPeople(Object.keys(eventDetails.schedules))} className={`${style.actions}`}>
               Show all
             </button>
-            <button onClick={() => setPeople([])}>
+            <button onClick={() => setPeople([])} className={`${style.actions}`}>
               Hide all
             </button>
             {!eventDetails.allow_registration && <div>
@@ -129,13 +129,13 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                 </button>
               </form>
             </div>}
-
+            
             <ul className={`${style["list"]}`}>
               {getNames(eventDetails).map(name => {
-                return (     
+                return (
                   <li className={`${style["list-item"]} ${style.title}`}
                     key={name}
-                  > 
+                  >
                     {name}
                     <br/>
                     <p className={`${style["notes"]}`}>{eventDetails.notes[name] ? eventDetails.notes[name] : "No notes"}</p>
@@ -149,7 +149,7 @@ function ManageMeetingPage({ match: { params: { id } } }: RouteComponentProps<{ 
                     <p
                       className={`${style["toggle"]}`}
                       onClick={() => setPeople(
-                        people.includes(name) ? 
+                        people.includes(name) ?
                         people.filter((n) => n !== name) :
                         [...people, name]
                       )}
