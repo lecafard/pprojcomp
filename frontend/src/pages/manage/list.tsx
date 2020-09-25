@@ -11,7 +11,7 @@ interface ListItemProps {
 function ListItem(props: ListItemProps) {
     return (
         <div className={`${style["list-item"]}`}>
-        <div className={`${style.title}`}> {props.name} </div>
+        <div className={`${style.title}`}> {props.type === "manager" ? "○" : ""} {props.name} </div>
         <div className={`${style.title2}`}> {props.location} </div>
         {props.type === "guest" ? "Guest key: " : "Owner key: "} {props.id}
         </div>
@@ -27,7 +27,7 @@ function ManageListPage() {
         {managedMeetings ? managedMeetings["meetingsList"]
           .map((meeting) => (
             <a href={`/s/${meeting.id}`}>
-              <ListItem id={meeting.id} name={meeting.name} location={meeting.location} type="guest"/>
+              <ListItem id={meeting.id} name={meeting.name} location={meeting.location} type="manager"/>
             </a>
           ))
         : null}
